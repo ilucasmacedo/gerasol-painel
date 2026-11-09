@@ -84,7 +84,7 @@
   main { margin-top: -44px; padding-bottom: 40px; }
 
   /* ---------- cards ---------- */
-  .card { background: var(--card); border-radius: var(--raio); box-shadow: var(--sombra); border: 1px solid rgba(15, 39, 71, .05); padding: 18px 18px 16px; position: relative; min-width: 0; }
+  .card { background: var(--card); border-radius: var(--raio); box-shadow: var(--sombra); border: 1px solid rgba(15, 39, 71, .05); padding: 18px 18px 16px; position: relative; min-width: 0; isolation: isolate; }
   .card h3 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
   .card .sub { color: var(--suave); font-size: 12.5px; margin-top: 2px; }
   .card-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -162,6 +162,11 @@
   .etapa-f small { display: block; font-weight: 500; font-size: 11.5px; opacity: .85; }
   .etapa-f .n { font-size: 22px; letter-spacing: -.02em; }
   .conv { font-size: 11.5px; color: var(--suave); font-weight: 600; }
+  .funil-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .funil-extra div { border: 1px solid var(--linha); border-radius: 12px; padding: 10px 12px; background: #f9fafc; }
+  .funil-extra b { font-size: 19px; color: var(--navy); margin-right: 5px; }
+  .funil-extra span { font-size: 12.5px; font-weight: 600; color: #3b4458; }
+  .funil-extra small { display: block; margin-top: 4px; font-size: 11.5px; color: var(--suave); line-height: 1.4; }
   .etapas-lista { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
   .etapas-lista span { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #f1f3f8; color: #3b4458; }
   .etapas-lista span b { margin-left: 4px; }
@@ -217,8 +222,8 @@
 
   @media (max-width: 1100px) {
     .kpis { grid-template-columns: repeat(2, 1fr); }
-    .g-2-1, .g-3 { grid-template-columns: 1fr 1fr; }
-    .g-2-1 > :first-child { grid-column: 1 / -1; }
+    .g-2-1 { grid-template-columns: 3fr 2fr; }
+    .g-3 { grid-template-columns: 1fr 1fr; }
     .g-3 > :last-child { grid-column: 1 / -1; }
     .indicadores { grid-template-columns: 1fr 1fr; }
   }
@@ -238,7 +243,7 @@
     .kpi-rot { font-size: 11.5px; }
     .kpi-ico { width: 26px; height: 26px; }
     .g-2-1, .g-1-1, .g-3 { grid-template-columns: 1fr; }
-    .g-3 > :last-child, .g-2-1 > :first-child { grid-column: auto; }
+    .g-3 > :last-child { grid-column: auto; }
     .indicadores { grid-template-columns: 1fr; }
     .grafico { height: 250px; }
     .card { padding: 15px 13px 13px; border-radius: 16px; }
@@ -247,6 +252,7 @@
     .rolagem .lista td.peq { white-space: normal; min-width: 140px; }
     .busca { width: 100%; }
     .etapa-f { min-width: 0; }
+    .funil-extra { grid-template-columns: 1fr; }
     .secao { font-size: 16px; }
   }
 </style>
@@ -344,7 +350,7 @@
   </section>
 
   <!-- Vendas -->
-  <h2 class="secao">Vendas <small id="subVendas"></small></h2>
+  <h2 class="secao" id="secVendas">Vendas <small id="subVendas"></small></h2>
   <div class="grade g-2-1">
     <section class="card" data-bloco id="blocoFat">
       <div class="card-topo"><div><h3>Faturamento mês a mês</h3><div class="sub">Vendido no CRM (Groner) e lançado na Conta Azul, com linha de tendência</div></div></div>
@@ -403,10 +409,10 @@
   </section>
 
   <!-- Comercial -->
-  <h2 class="secao">Comercial <small>funil da Groner e integração com a Conta Azul</small></h2>
+  <h2 class="secao" id="secComercial">Comercial <small>funil da Groner e integração com a Conta Azul</small></h2>
   <div class="grade g-1-1">
     <section class="card" data-bloco id="blocoFunil">
-      <div class="card-topo"><div><h3>Funil de vendas</h3><div class="sub">Contatos e projetos criados no período até a venda</div></div></div>
+      <div class="card-topo"><div><h3>Funil de vendas</h3><div class="sub">Do contato à venda, no período escolhido</div></div></div>
       <div class="corpo" id="funil"><div class="indisp"><div class="spinner"></div></div></div>
     </section>
     <section class="card" data-bloco id="blocoInt">
@@ -958,20 +964,30 @@ function renderContas() {
 function renderFunil() {
   const fu = dados.funil_groner;
   if (!ok(fu)) return indisponivel("blocoFunil", fu && fu.erro);
+  const fechadas = fu.vendas_dos_projetos ?? fu.vendas;
+  const conversao = fu.conversao_projetos_pct ?? fu.taxa_conversao_pct;
   const etapas = [
     { nome: "Contatos (leads)", n: fu.leads, cor: "linear-gradient(90deg,#0f2747,#1e3a6b)" },
-    { nome: "Projetos criados", n: fu.projetos, cor: "linear-gradient(90deg,#1e3a6b,#2563eb)" },
     { nome: "Propostas aceitas", n: fu.propostas_aceitas, cor: "linear-gradient(90deg,#f9b316,#f59e0b)" },
-    { nome: "Vendas fechadas", n: fu.vendas, cor: "linear-gradient(90deg,#f57c1f,#ea580c)" },
+    { nome: "Vendas fechadas", n: fechadas, cor: "linear-gradient(90deg,#f57c1f,#ea580c)" },
   ];
   const max = Math.max(1, ...etapas.map((e) => e.n || 0));
+  let anterior = 108;
+  for (const e of etapas) {
+    e.w = Math.min(40 + 60 * Math.sqrt((e.n || 0) / max), anterior - 8);
+    anterior = e.w;
+  }
   $("funil").innerHTML = `<div class="funil">${etapas.map((e, i) => `
-      ${i ? `<div class="conv">${etapas[i - 1].n && e.n <= etapas[i - 1].n ? `↓ ${pct(e.n / etapas[i - 1].n * 100, 0)}` : "↓"}</div>` : ""}
-      <div class="etapa-f" style="width:${Math.max(42, (e.n || 0) / max * 100)}%;background:${e.cor}"><span><small>${e.nome}</small></span><span class="n">${inteiro(e.n)}</span></div>`).join("")}
+      ${i ? `<div class="conv">${etapas[i - 1].n && e.n <= etapas[i - 1].n ? `↓ ${pct(e.n / etapas[i - 1].n * 100, 0)} seguem` : "↓"}</div>` : ""}
+      <div class="etapa-f" style="width:${e.w}%;background:${e.cor}"><span><small>${e.nome}</small></span><span class="n">${inteiro(e.n)}</span></div>`).join("")}
     </div>
-    <div style="text-align:center;margin-top:12px"><span class="chip ${fu.taxa_conversao_pct >= 20 ? "verde" : fu.taxa_conversao_pct >= 10 ? "amarelo" : "vermelho"}" style="font-size:13px;padding:5px 12px">
-      Conversão: ${pct(fu.taxa_conversao_pct)} dos contatos viram venda</span></div>
-    <div class="sub" style="margin-top:12px">Onde estão hoje os projetos criados no período. As vendas podem vir de projetos de meses anteriores.</div>
+    <div style="text-align:center;margin-top:12px"><span class="chip ${conversao >= 20 ? "verde" : conversao >= 10 ? "amarelo" : "vermelho"}" style="font-size:13px;padding:5px 12px">
+      Conversão: ${pct(conversao)} dos contatos viraram venda</span></div>
+    <div class="funil-extra">
+      <div><b>${inteiro(fu.projetos)}</b><span>projetos criados</span><small>Um contato pode ter mais de um projeto (orçamentos diferentes), e contatos antigos também ganham projetos novos.</small></div>
+      <div><b>${inteiro(fu.vendas)}</b><span>vendas aprovadas no período</span><small>Inclui vendas de projetos criados em meses anteriores${fu.vendas > fechadas ? ", por isso é maior que as vendas fechadas do funil" : ""}.</small></div>
+    </div>
+    <div class="sub" style="margin-top:12px">Onde estão hoje os projetos criados no período:</div>
     <div class="etapas-lista" style="margin-top:6px">${fu.por_etapa.slice(0, 8).map((e) => `<span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${esc(e.cor || "#94a3b8")};margin-right:5px"></i>${esc(e.nome)}<b>${e.quantidade}</b></span>`).join("")}</div>`;
 }
 
