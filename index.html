@@ -5,255 +5,287 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#0f2747">
-<title>Gerasol · Painel de vendas e finanças</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='14' fill='%23f9b316'/%3E%3Cg stroke='%23f57c1f' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M32 4v8M32 52v8M4 32h8M52 32h8M12 12l6 6M46 46l6 6M12 52l6-6M46 18l6-6'/%3E%3C/g%3E%3C/svg%3E">
+<meta name="theme-color" content="#ffffff">
+<title>Gerasol · Painel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2316324F'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23D97706'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
 <style>
   :root {
-    --navy: #0f2747;
-    --navy-2: #173a66;
-    --azul: #2563eb;
-    --sol: #f9b316;
-    --laranja: #f57c1f;
-    --fundo: #f4f6fb;
+    --fundo: #f7f8fa;
     --card: #ffffff;
-    --texto: #16213a;
-    --suave: #6b7489;
-    --linha: #e7eaf2;
+    --borda: #eceef1;
+    --borda-forte: #e2e5ea;
+    --texto: #111827;
+    --texto-2: #374151;
+    --suave: #6b7280;
+    --fraco: #9ca3af;
+    --navy: #16324f;
+    --navy-2: #3d5a80;
+    --navy-claro: #eef2f6;
+    --ambar: #d97706;
     --verde: #16a34a;
-    --amarelo: #f59e0b;
+    --atencao: #e0a100;
     --vermelho: #dc2626;
-    --raio: 18px;
-    --sombra: 0 1px 2px rgba(15, 39, 71, .05), 0 8px 24px rgba(15, 39, 71, .06);
+    --cinza: #c4c9d1;
+    --raio: 10px;
+    --sombra: 0 1px 2px rgba(16, 24, 40, .04);
+    --gap: 12px;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    color: var(--texto); background: var(--fundo); font-size: 14px; line-height: 1.45;
+    margin: 0; background: var(--fundo); color: var(--texto);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased;
   }
-  button, input { font: inherit; }
+  button, input { font: inherit; color: inherit; }
+  h1, h2, h3, p { margin: 0; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+  .num, .kpi-valor, .lista td { font-variant-numeric: tabular-nums; }
 
-  /* ---------- topo ---------- */
-  .topo {
-    background:
-      radial-gradient(900px 340px at 92% -40%, rgba(249, 179, 22, .55), transparent 60%),
-      radial-gradient(600px 300px at 70% 130%, rgba(245, 124, 31, .28), transparent 60%),
-      linear-gradient(120deg, #0b1f3a 0%, var(--navy) 45%, var(--navy-2) 100%);
-    color: #fff; padding: 22px 0 64px;
-  }
-  .container { max-width: 1320px; margin: 0 auto; padding: 0 22px; }
-  .topo-linha { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
-  .marca { display: flex; align-items: center; gap: 14px; }
-  .marca svg { width: 46px; height: 46px; flex: none; filter: drop-shadow(0 4px 14px rgba(249, 179, 22, .45)); }
-  .marca h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
-  .marca h1 span { color: var(--sol); }
-  .marca p { margin: 2px 0 0; color: #b9c6dc; font-size: 13px; }
-  .controles { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .seg { display: inline-flex; background: rgba(255, 255, 255, .09); border: 1px solid rgba(255, 255, 255, .14); border-radius: 12px; padding: 3px; flex-wrap: wrap; }
+  /* ---------- cabecalho ---------- */
+  .topo { background: var(--card); border-bottom: 1px solid var(--borda); }
+  .topo-linha { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0 12px; flex-wrap: wrap; }
+  .marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .marca-ico { width: 30px; height: 30px; border-radius: 8px; background: var(--navy); display: grid; place-items: center; flex: none; }
+  .marca-ico i { width: 11px; height: 11px; border-radius: 50%; background: var(--ambar); }
+  .marca h1 { font-size: 15px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25; }
+  .marca p { font-size: 12.5px; color: var(--suave); line-height: 1.25; }
+  .controles { display: flex; align-items: center; gap: 8px; }
+  .seg { display: inline-flex; background: #f3f4f6; border: 1px solid var(--borda); border-radius: 8px; padding: 2px; }
   .seg button {
-    border: 0; background: transparent; color: #dbe4f3; padding: 7px 12px; border-radius: 9px; cursor: pointer;
-    font-size: 13px; font-weight: 600; white-space: nowrap; transition: background .15s, color .15s;
+    border: 0; background: transparent; color: var(--texto-2); padding: 5px 12px; border-radius: 6px;
+    font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .12s, color .12s;
   }
-  .seg button:hover { color: #fff; background: rgba(255, 255, 255, .08); }
-  .seg button.ativo { background: linear-gradient(135deg, var(--sol), var(--laranja)); color: #1b1203; box-shadow: 0 4px 14px rgba(245, 124, 31, .35); }
+  .seg button:hover { color: var(--texto); }
+  .seg button.ativo { background: var(--navy); color: #fff; }
+  .seg .s { display: none; }
   .btn {
-    display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 255, 255, .2);
-    background: rgba(255, 255, 255, .1); color: #fff; padding: 8px 14px; border-radius: 11px; cursor: pointer; font-weight: 600; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--borda-forte); background: var(--card);
+    color: var(--texto-2); padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
   }
-  .btn:hover { background: rgba(255, 255, 255, .18); }
-  .btn svg { width: 16px; height: 16px; }
+  .btn:hover { background: #f9fafb; color: var(--texto); }
+  .btn svg { width: 15px; height: 15px; }
   .btn.girando svg { animation: gira 1s linear infinite; }
+  .btn.primario { background: var(--navy); border-color: var(--navy); color: #fff; }
   @keyframes gira { to { transform: rotate(360deg); } }
-  .custom { display: none; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; color: #dbe4f3; font-size: 13px; }
+  .meta { display: flex; gap: 4px 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--suave); padding-bottom: 14px; }
+  .meta b { color: var(--texto-2); font-weight: 500; }
+  .custom { display: none; align-items: center; gap: 8px; flex-wrap: wrap; padding-bottom: 14px; font-size: 13px; color: var(--suave); }
   .custom.aberto { display: flex; }
-  .custom input { background: rgba(255, 255, 255, .95); border: 0; border-radius: 9px; padding: 6px 10px; color: var(--texto); }
-  .custom .btn { background: var(--sol); color: #1b1203; border-color: transparent; }
-  .topo-info { display: flex; gap: 8px 18px; flex-wrap: wrap; margin-top: 16px; color: #b9c6dc; font-size: 12.5px; }
-  .topo-info b { color: #fff; font-weight: 600; }
-  .ponto { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #4ade80; margin-right: 6px; box-shadow: 0 0 0 3px rgba(74, 222, 128, .2); }
-
-  .barra { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--sol), var(--laranja)); z-index: 50; transition: width .4s ease, opacity .4s; opacity: 0; }
+  .custom input { border: 1px solid var(--borda-forte); border-radius: 8px; padding: 5px 10px; background: var(--card); color: var(--texto); }
+  .barra { position: fixed; top: 0; left: 0; height: 2px; width: 0; background: var(--navy); z-index: 50; opacity: 0; transition: width .4s ease, opacity .4s; }
   .barra.ativa { opacity: 1; width: 70%; transition: width 8s cubic-bezier(.1, .7, .2, 1); }
   .barra.fim { opacity: 0; width: 100%; }
 
-  main { margin-top: -44px; padding-bottom: 40px; }
+  main { padding: 24px 0 48px; }
 
   /* ---------- cards ---------- */
-  .card { background: var(--card); border-radius: var(--raio); box-shadow: var(--sombra); border: 1px solid rgba(15, 39, 71, .05); padding: 18px 18px 16px; position: relative; min-width: 0; isolation: isolate; }
-  .card h3 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
-  .card .sub { color: var(--suave); font-size: 12.5px; margin-top: 2px; }
-  .card-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-  .grafico { position: relative; height: 290px; }
-  .grafico.baixo { height: 300px; }
-  .grade { display: grid; gap: 16px; margin-top: 16px; }
-  .g-2-1 { grid-template-columns: 2fr 1fr; }
-  .g-1-1 { grid-template-columns: 1fr 1fr; }
-  .g-3 { grid-template-columns: 1fr 1fr 1fr; }
-  .secao { display: flex; align-items: center; gap: 10px; margin: 30px 0 0; font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--navy); }
-  .secao::before { content: ""; width: 6px; height: 22px; border-radius: 4px; background: linear-gradient(180deg, var(--sol), var(--laranja)); }
-  .secao small { font-size: 12.5px; font-weight: 500; color: var(--suave); letter-spacing: 0; }
+  .card { background: var(--card); border: 1px solid var(--borda); border-radius: var(--raio); box-shadow: var(--sombra); padding: 20px; min-width: 0; position: relative; }
+  .card-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .card h3 { font-size: 14px; font-weight: 600; letter-spacing: -.005em; }
+  .card .sub { font-size: 12.5px; color: var(--suave); margin-top: 2px; }
+  .abas { display: inline-flex; background: #f3f4f6; border-radius: 7px; padding: 2px; gap: 2px; flex-wrap: wrap; }
+  .abas button { border: 0; background: transparent; padding: 4px 10px; border-radius: 5px; font-size: 12.5px; font-weight: 500; color: var(--suave); cursor: pointer; white-space: nowrap; }
+  .abas button:hover { color: var(--texto); }
+  .abas button.ativo { background: var(--card); color: var(--texto); box-shadow: 0 1px 2px rgba(16, 24, 40, .08); }
 
-  .abas { display: inline-flex; background: #f1f3f8; border-radius: 10px; padding: 3px; gap: 2px; flex-wrap: wrap; }
-  .abas button { border: 0; background: transparent; padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--suave); cursor: pointer; }
-  .abas button.ativo { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(15, 39, 71, .12); }
+  .secao-topo { display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; margin: 32px 0 12px; }
+  .secao-topo h2 { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+  .secao-topo p { font-size: 12.5px; color: var(--suave); }
+
+  .grade { display: grid; gap: var(--gap); margin-top: var(--gap); }
+  .secao-topo + .grade { margin-top: 0; }
+  .g-principal { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+  .g-par { grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); }
+  .g-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grafico { position: relative; height: 280px; }
+  .grafico.baixo { height: 250px; }
+  .card.estica { display: flex; flex-direction: column; }
+  .card.estica > .corpo { flex: 1; display: flex; flex-direction: column; }
+  .card.estica .grafico { flex: 1; height: auto; min-height: 280px; }
+  .card.estica .grafico canvas { position: absolute; inset: 0; }
 
   /* ---------- KPIs ---------- */
-  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .kpi { padding: 16px 18px; overflow: hidden; }
-  .kpi::after { content: ""; position: absolute; right: -30px; top: -30px; width: 110px; height: 110px; border-radius: 50%; background: var(--k-cor, var(--sol)); opacity: .08; }
-  .kpi-rot { display: flex; align-items: center; gap: 8px; color: var(--suave); font-size: 12.5px; font-weight: 600; }
-  .kpi-ico { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: color-mix(in srgb, var(--k-cor, var(--sol)) 14%, white); color: var(--k-cor, var(--sol)); flex: none; }
-  .kpi-ico svg { width: 17px; height: 17px; }
-  .kpi-valor { font-size: 26px; font-weight: 800; letter-spacing: -.03em; margin-top: 10px; white-space: nowrap; color: var(--navy); }
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+  .kpi { padding: 16px 18px; }
+  .kpi-rot { font-size: 11.5px; font-weight: 500; color: var(--suave); text-transform: uppercase; letter-spacing: .06em; }
+  .kpi-valor { font-size: 26px; font-weight: 600; letter-spacing: -.02em; margin-top: 6px; color: var(--texto); white-space: nowrap; line-height: 1.2; }
   .kpi-valor.neg { color: var(--vermelho); }
-  .kpi-det { color: var(--suave); font-size: 12px; margin-top: 4px; min-height: 18px; }
-  .kpi-det b { color: var(--texto); font-weight: 600; }
-  .kpi-spark { height: 34px; margin-top: 8px; }
-  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
-  .chip.verde { background: #dcfce7; color: #15803d; }
-  .chip.amarelo { background: #fef3c7; color: #b45309; }
-  .chip.vermelho { background: #fee2e2; color: #b91c1c; }
-  .chip.cinza { background: #eef0f5; color: var(--suave); }
+  .kpi-det { font-size: 12.5px; color: var(--suave); margin-top: 4px; min-height: 19px; }
+  .var { font-weight: 600; }
+  .var.pos { color: var(--verde); }
+  .var.neg { color: var(--vermelho); }
 
   /* ---------- saude ---------- */
-  .saude-topo { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .placar { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--suave); }
-  .placar .chip { font-size: 12.5px; padding: 4px 10px; }
-  .indicadores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
-  .ind { border: 1px solid var(--linha); border-radius: 14px; padding: 14px; display: flex; gap: 12px; background: linear-gradient(180deg, #fff, #fbfcfe); }
-  .farol { flex: none; width: 16px; display: flex; flex-direction: column; gap: 4px; padding-top: 3px; }
-  .farol i { width: 12px; height: 12px; border-radius: 50%; background: #e5e7eb; display: block; }
-  .farol.verde i:nth-child(3) { background: var(--verde); box-shadow: 0 0 0 3px rgba(22, 163, 74, .18); }
-  .farol.amarelo i:nth-child(2) { background: var(--amarelo); box-shadow: 0 0 0 3px rgba(245, 158, 11, .2); }
-  .farol.vermelho i:nth-child(1) { background: var(--vermelho); box-shadow: 0 0 0 3px rgba(220, 38, 38, .18); }
-  .ind-nome { font-size: 12.5px; color: var(--suave); font-weight: 600; }
-  .ind-valor { font-size: 21px; font-weight: 800; letter-spacing: -.02em; color: var(--navy); margin: 2px 0 4px; }
-  .ind-frase { font-size: 12.8px; color: #3b4458; }
-  .aviso { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #fff8e6; border: 1px solid #fde7b0; color: #7a4b00; font-size: 12.8px; }
+  .saude { margin-top: var(--gap); }
+  .saude .card-topo { margin-bottom: 12px; align-items: center; }
+  .placar { display: flex; gap: 14px; font-size: 12.5px; color: var(--suave); }
+  .placar span { display: inline-flex; align-items: center; gap: 6px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { flex: 1 1 180px; min-width: 0; padding: 10px 12px; border: 1px solid var(--borda); border-radius: 8px; background: #fbfbfc; }
+  .pill-nome { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--suave); }
+  .pill-linha { display: flex; align-items: baseline; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
+  .pill-valor { font-size: 15px; font-weight: 600; color: var(--texto); white-space: nowrap; }
+  .pill-micro { font-size: 12px; color: var(--suave); flex-basis: 100%; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--cinza); }
+  .dot.verde { background: var(--verde); }
+  .dot.amarelo { background: var(--atencao); }
+  .dot.vermelho { background: var(--vermelho); }
+  .nota { display: flex; gap: 8px; align-items: baseline; margin-top: 12px; font-size: 12.5px; color: var(--texto-2); }
+  .nota .dot { background: var(--ambar); transform: translateY(-1px); }
+  .nota-peq { font-size: 12px; color: var(--suave); margin-top: 10px; }
 
-  /* ---------- listas ---------- */
+  /* ---------- rosca ---------- */
+  .rosca { display: flex; align-items: center; justify-content: center; gap: 24px; height: 280px; }
+  .rosca .grafico { width: 180px; height: 180px; flex: none; }
+  .legenda { list-style: none; margin: 0; padding: 0; flex: 1; min-width: 0; max-width: 260px; display: flex; flex-direction: column; gap: 9px; }
+  .legenda li { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; align-items: center; gap: 8px; font-size: 13px; color: var(--texto-2); }
+  .legenda i { width: 8px; height: 8px; border-radius: 2px; }
+  .legenda .leg-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .legenda .leg-pct { color: var(--suave); font-variant-numeric: tabular-nums; }
+
+  /* ---------- listas e tabelas ---------- */
   .lista { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .lista th { text-align: left; color: var(--suave); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; padding: 8px 8px; border-bottom: 1px solid var(--linha); white-space: nowrap; }
-  .lista td { padding: 9px 8px; border-bottom: 1px solid #f1f3f8; vertical-align: top; }
+  .lista th { text-align: left; color: var(--suave); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 8px 12px; border-bottom: 1px solid var(--borda); white-space: nowrap; background: var(--card); }
+  .lista td { padding: 10px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; color: var(--texto-2); }
+  .lista td.forte { color: var(--texto); font-weight: 500; }
+  .lista tbody tr:hover td { background: #f9fafb; }
   .lista tr:last-child td { border-bottom: 0; }
-  .lista .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .lista .peq { color: var(--suave); font-size: 11.8px; }
-  .rolagem { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .rolagem.alta { max-height: 360px; overflow-y: auto; }
+  .lista .num { text-align: right; white-space: nowrap; }
+  .lista .peq { color: var(--suave); font-size: 12.5px; }
+  .rolagem { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -20px; padding: 0 8px; }
+  .rolagem.alta { max-height: 380px; overflow-y: auto; }
+  .rolagem.alta thead th { position: sticky; top: 0; z-index: 1; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; background: #f3f4f6; color: var(--texto-2); white-space: nowrap; }
+  .tag.ok { background: #ecfdf3; color: #067647; }
+  .tag.alerta { background: #fffaeb; color: #b54708; }
+  .tag.erro { background: #fef3f2; color: #b42318; }
 
-  .saldo-linha { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 10px 0; border-bottom: 1px solid #f1f3f8; }
-  .saldo-linha:last-child { border-bottom: 0; }
-  .saldo-barra { grid-column: 1 / -1; height: 7px; border-radius: 6px; background: #f1f3f8; overflow: hidden; }
-  .saldo-barra span { display: block; height: 100%; border-radius: 6px; }
-  .saldo-total { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+  .saldo-total { font-size: 24px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .neg { color: var(--vermelho) !important; }
+  .saldo-rot { font-size: 12.5px; color: var(--suave); }
+  .saldo-lista { list-style: none; margin: 14px 0 0; padding: 0; }
+  .saldo-lista li { padding: 10px 0; border-top: 1px solid #f3f4f6; }
+  .saldo-linha { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--texto-2); }
+  .saldo-linha b { font-weight: 500; color: var(--texto); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .saldo-barra { height: 4px; border-radius: 2px; background: #f3f4f6; margin-top: 6px; overflow: hidden; }
+  .saldo-barra span { display: block; height: 100%; border-radius: 2px; }
 
   /* ---------- funil ---------- */
-  .funil { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 6px; }
-  .etapa-f {
-    position: relative; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
-    padding: 0 16px; color: #fff; font-weight: 700; min-width: 240px; box-shadow: 0 6px 16px rgba(15, 39, 71, .12); transition: transform .15s;
-  }
-  .etapa-f:hover { transform: scale(1.015); }
-  .etapa-f small { display: block; font-weight: 500; font-size: 11.5px; opacity: .85; }
-  .etapa-f .n { font-size: 22px; letter-spacing: -.02em; }
-  .conv { font-size: 11.5px; color: var(--suave); font-weight: 600; }
-  .funil-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
-  .funil-extra div { border: 1px solid var(--linha); border-radius: 12px; padding: 10px 12px; background: #f9fafc; }
-  .funil-extra b { font-size: 19px; color: var(--navy); margin-right: 5px; }
-  .funil-extra span { font-size: 12.5px; font-weight: 600; color: #3b4458; }
-  .funil-extra small { display: block; margin-top: 4px; font-size: 11.5px; color: var(--suave); line-height: 1.4; }
-  .etapas-lista { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-  .etapas-lista span { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #f1f3f8; color: #3b4458; }
-  .etapas-lista span b { margin-left: 4px; }
+  .funil { display: flex; flex-direction: column; gap: 16px; }
+  .f-rot { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 13px; color: var(--texto-2); margin-bottom: 6px; }
+  .f-rot em { font-style: normal; color: var(--suave); font-size: 12px; margin-left: 8px; }
+  .f-rot b { font-size: 15px; font-weight: 600; color: var(--texto); font-variant-numeric: tabular-nums; }
+  .f-trilha { height: 10px; border-radius: 5px; background: #f1f3f5; overflow: hidden; }
+  .f-trilha span { display: block; height: 100%; border-radius: 5px; }
+  .mini { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--borda); border-radius: 8px; margin-top: 18px; }
+  .mini > div { padding: 10px 12px; min-width: 0; }
+  .mini > div + div { border-left: 1px solid var(--borda); }
+  .mini b { display: block; font-size: 17px; font-weight: 600; color: var(--texto); font-variant-numeric: tabular-nums; }
+  .mini span { font-size: 12px; color: var(--suave); }
+  .etapas { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px; font-size: 12px; }
+  .etapas-rot { color: var(--suave); margin-right: 4px; }
+  .chip { display: inline-flex; gap: 5px; padding: 2px 9px; border-radius: 999px; background: #f3f4f6; color: var(--texto-2); font-size: 12px; }
+  .chip b { font-weight: 600; color: var(--texto); }
 
-  /* ---------- integracao ---------- */
-  .status-int { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; background: #f6f8fc; }
-  .status-int .ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex: none; }
-  .status-int .ico svg { width: 22px; height: 22px; }
-  .mini-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
-  .mini-kpis div { border: 1px solid var(--linha); border-radius: 12px; padding: 10px; text-align: center; }
-  .mini-kpis b { display: block; font-size: 20px; color: var(--navy); }
-  .mini-kpis span { font-size: 11.5px; color: var(--suave); }
+  .status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+  .status b { font-weight: 600; }
+  .status span { color: var(--suave); font-size: 12.5px; }
+  #integracao .mini { margin: 14px 0 6px; }
 
   /* ---------- tabela de vendas ---------- */
-  .busca { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .busca input { border: 1px solid var(--linha); border-radius: 10px; padding: 8px 12px 8px 34px; min-width: 240px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236b7489' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 11px center; outline: none; }
-  .busca input:focus { border-color: var(--sol); box-shadow: 0 0 0 3px rgba(249, 179, 22, .2); }
+  .busca { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .busca input {
+    border: 1px solid var(--borda-forte); border-radius: 8px; padding: 6px 10px 6px 32px; min-width: 240px; outline: none; font-size: 13px;
+    background: var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%239ca3af' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 11px center;
+  }
+  .busca input:focus { border-color: var(--navy-2); box-shadow: 0 0 0 3px rgba(22, 50, 79, .1); }
   .tabela-vendas th[data-ord] { cursor: pointer; user-select: none; }
-  .tabela-vendas th[data-ord]:hover { color: var(--navy); }
-  .tabela-vendas th .seta { opacity: .35; margin-left: 3px; }
-  .tabela-vendas th.ord .seta { opacity: 1; color: var(--laranja); }
-  .tabela-vendas tbody tr:hover { background: #fffaf0; }
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: #eef2ff; color: #3730a3; white-space: nowrap; }
-  .tag.ok { background: #dcfce7; color: #166534; }
-  .tag.alerta { background: #fef3c7; color: #92400e; }
-  .rodape-tabela { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; color: var(--suave); font-size: 12.5px; gap: 10px; flex-wrap: wrap; }
-  .btn-claro { border: 1px solid var(--linha); background: #fff; border-radius: 10px; padding: 7px 14px; cursor: pointer; font-weight: 600; color: var(--navy); }
-  .btn-claro:hover { border-color: var(--sol); }
+  .tabela-vendas th[data-ord]:hover { color: var(--texto); }
+  .tabela-vendas th .seta { margin-left: 4px; opacity: .35; }
+  .tabela-vendas th.ord { color: var(--texto); }
+  .tabela-vendas th.ord .seta { opacity: 1; }
+  .rodape-tabela { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; font-size: 12.5px; color: var(--suave); }
+  .rodape-tabela b { color: var(--texto); font-weight: 600; }
 
   /* ---------- estados ---------- */
-  .indisp { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; color: var(--suave); padding: 30px 10px; min-height: 160px; }
-  .indisp svg { width: 34px; height: 34px; color: #c3c9d6; }
-  .indisp b { color: #4b5468; }
-  .indisp small { max-width: 360px; font-size: 11.5px; color: #9aa2b4; word-break: break-word; }
-  .esqueleto .kpi-valor, .esqueleto .kpi-det, .esqueleto .ind-valor, .esqueleto .ind-frase {
-    color: transparent !important; border-radius: 8px;
-    background: linear-gradient(90deg, #eef1f6 0%, #f7f8fb 50%, #eef1f6 100%); background-size: 200% 100%; animation: brilho 1.2s infinite;
-  }
-  .esqueleto .kpi-valor { width: 70%; } .esqueleto .kpi-det { width: 50%; }
-  @keyframes brilho { to { background-position: -200% 0; } }
+  .indisp { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 4px; color: var(--suave); padding: 28px 10px; min-height: 160px; font-size: 13px; }
+  .indisp b { color: var(--texto-2); font-weight: 500; }
+  .indisp small { max-width: 360px; font-size: 12px; color: var(--fraco); word-break: break-word; }
   .carregando-graf { position: absolute; inset: 0; display: grid; place-items: center; }
-  .spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #f1f3f8; border-top-color: var(--sol); animation: gira .8s linear infinite; }
-  .tela { position: fixed; inset: 0; z-index: 40; display: none; place-items: center; background: rgba(244, 246, 251, .92); backdrop-filter: blur(4px); padding: 20px; }
+  .spinner { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #e5e7eb; border-top-color: var(--navy); animation: gira .8s linear infinite; }
+  .esqueleto .kpi-valor, .esqueleto .kpi-det, .esqueleto .pill-linha {
+    color: transparent !important; border-radius: 6px; background: linear-gradient(90deg, #f1f3f5 0%, #f8f9fa 50%, #f1f3f5 100%); background-size: 200% 100%; animation: brilho 1.2s infinite;
+  }
+  .esqueleto .kpi-valor { width: 65%; } .esqueleto .kpi-det { width: 45%; }
+  @keyframes brilho { to { background-position: -200% 0; } }
+  .tela { position: fixed; inset: 0; z-index: 40; display: none; place-items: center; background: rgba(247, 248, 250, .96); padding: 20px; }
   .tela.aberta { display: grid; }
-  .tela .caixa { background: #fff; border-radius: 22px; box-shadow: var(--sombra); max-width: 440px; padding: 28px; text-align: center; }
-  .tela h2 { margin: 12px 0 6px; color: var(--navy); }
-  .tela p { color: var(--suave); margin: 0 0 16px; }
-  .tela .btn { background: var(--navy); border-color: var(--navy); }
+  .tela .caixa { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; box-shadow: 0 8px 24px rgba(16, 24, 40, .08); max-width: 420px; padding: 28px; text-align: center; }
+  .tela h2 { font-size: 16px; font-weight: 600; margin: 14px 0 6px; }
+  .tela p { color: var(--suave); margin-bottom: 18px; font-size: 13.5px; }
 
-  footer { margin-top: 28px; color: var(--suave); font-size: 12px; }
-  footer ul { margin: 6px 0 0; padding-left: 18px; }
+  footer { margin-top: 28px; font-size: 12.5px; color: var(--suave); }
+  footer summary { cursor: pointer; color: var(--texto-2); font-weight: 500; }
+  footer ul { margin: 8px 0 0; padding-left: 18px; }
   footer li { margin: 3px 0; }
+  footer p { margin-top: 10px; }
 
   @media (max-width: 1100px) {
-    .kpis { grid-template-columns: repeat(2, 1fr); }
-    .g-2-1 { grid-template-columns: 3fr 2fr; }
-    .g-3 { grid-template-columns: 1fr 1fr; }
+    .g-principal { grid-template-columns: minmax(0, 1fr); }
+    .rosca { height: auto; padding: 8px 0; }
+    .g-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .g-3 > :last-child { grid-column: 1 / -1; }
-    .indicadores { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 860px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 720px) {
-    .container { padding: 0 14px; }
-    .topo { padding: 16px 0 58px; }
-    .marca h1 { font-size: 19px; }
-    .marca svg { width: 38px; height: 38px; }
-    .controles { width: 100%; }
-    .seg { width: 100%; display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
-    .seg button { padding: 7px 6px; font-size: 12px; grid-column: span 2; }
-    .seg button:nth-child(n+4) { grid-column: span 3; }
-    .btn-atualizar { flex: 1; justify-content: center; }
-    .kpis { gap: 10px; }
-    .kpi { padding: 13px 13px; }
-    .kpi-valor { font-size: 19px; }
-    .kpi-rot { font-size: 11.5px; }
-    .kpi-ico { width: 26px; height: 26px; }
-    .g-2-1, .g-1-1, .g-3 { grid-template-columns: 1fr; }
+    .container { padding: 0 16px; }
+    .topo-linha { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding-top: 14px; }
+    .controles { display: contents; }
+    .seg { grid-column: 1 / -1; grid-row: 2; display: flex; }
+    .seg button { flex: 1; padding: 6px 4px; font-size: 12.5px; }
+    .seg .l-longo { display: none; }
+    .seg .s { display: inline; }
+    main { padding-top: 16px; }
+    .kpis { gap: 8px; }
+    .kpi { padding: 12px 14px; }
+    .kpi-rot { font-size: 10.5px; letter-spacing: .05em; }
+    .kpi-valor { font-size: 20px; }
+    .kpi-det { font-size: 12px; }
+    .card { padding: 16px; }
+    .rolagem { margin: 0 -16px; padding: 0 4px; }
+    .g-3 { grid-template-columns: minmax(0, 1fr); }
     .g-3 > :last-child { grid-column: auto; }
-    .indicadores { grid-template-columns: 1fr; }
-    .grafico { height: 250px; }
-    .card { padding: 15px 13px 13px; border-radius: 16px; }
-    .busca input { min-width: 0; width: 100%; }
+    .grafico { height: 240px; }
+    .grafico.baixo { height: 240px; }
+    .rosca { gap: 18px; }
+    .rosca .grafico { width: 150px; height: 150px; }
+    .pill { flex-basis: 140px; }
+    .saude .card-topo { gap: 6px; }
+    .secao-topo { margin-top: 28px; }
+    .busca, .busca input { width: 100%; min-width: 0; }
     .rolagem .lista td, .rolagem .lista th { white-space: nowrap; }
-    .rolagem .lista td.peq { white-space: normal; min-width: 140px; }
-    .busca { width: 100%; }
-    .etapa-f { min-width: 0; }
-    .funil-extra { grid-template-columns: 1fr; }
-    .secao { font-size: 16px; }
+    .rolagem .lista td.peq { white-space: normal; min-width: 150px; }
+    .mini b { font-size: 15px; }
+    .mini > div { padding: 8px 10px; }
+  }
+
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .container { max-width: none; padding: 0; }
+    .controles, .custom, .abas, .busca input, #maisLinhas, .barra, .tela { display: none !important; }
+    .topo { border: 0; }
+    main { padding-top: 8px; }
+    .card { box-shadow: none; border: 1px solid #d1d5db; break-inside: avoid; }
+    .grade, .kpis { break-inside: avoid; }
+    .rolagem, .rolagem.alta { max-height: none; overflow: visible; margin: 0; }
+    footer details { display: block; }
   }
 </style>
 </head>
@@ -264,185 +296,158 @@
   <div class="container">
     <div class="topo-linha">
       <div class="marca">
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <defs><radialGradient id="gSol" cx="40%" cy="38%"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#f9b316"/></radialGradient></defs>
-          <circle cx="32" cy="32" r="14" fill="url(#gSol)"/>
-          <g stroke="#f57c1f" stroke-width="4.5" stroke-linecap="round"><path d="M32 5v8M32 51v8M5 32h8M51 32h8M13 13l5.5 5.5M45.5 45.5 51 51M13 51l5.5-5.5M45.5 18.5 51 13"/></g>
-        </svg>
-        <div>
-          <h1>Gera<span>sol</span> · Painel da empresa</h1>
-          <p>Vendas, recebimentos, contas e saúde financeira</p>
-        </div>
+        <div class="marca-ico" aria-hidden="true"><i></i></div>
+        <div><h1>Gerasol</h1><p>Vendas e finanças</p></div>
       </div>
       <div class="controles">
-        <div class="seg" id="periodos" role="group" aria-label="Período">
+        <nav class="seg" id="periodos" aria-label="Período">
           <button data-p="3">3 meses</button>
           <button data-p="6">6 meses</button>
           <button data-p="12" class="ativo">12 meses</button>
           <button data-p="ano">Ano atual</button>
-          <button data-p="custom">Personalizado</button>
-        </div>
+          <button data-p="custom"><span class="l-longo">Personalizado</span><span class="s">Datas</span></button>
+        </nav>
         <button class="btn btn-atualizar" id="atualizar" title="Buscar os dados mais recentes na Conta Azul e na Groner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
           Atualizar
         </button>
       </div>
     </div>
     <div class="custom" id="custom">
-      <span>De</span><input type="date" id="dIni"><span>até</span><input type="date" id="dFim">
-      <button class="btn" id="aplicar">Aplicar</button>
+      <label for="dIni">De</label><input type="date" id="dIni"><label for="dFim">até</label><input type="date" id="dFim">
+      <button class="btn primario" id="aplicar">Aplicar</button>
     </div>
-    <div class="topo-info">
-      <span>Período: <b id="txtPeriodo">—</b></span>
-      <span id="txtAtualizado"><span class="ponto"></span>Carregando dados…</span>
+    <div class="meta">
+      <span>Período <b id="txtPeriodo">—</b></span>
+      <span id="txtAtualizado">Carregando…</span>
     </div>
   </div>
 </header>
 
 <main class="container">
-  <!-- KPIs -->
-  <section class="kpis esqueleto" id="kpis">
-    <div class="card kpi" style="--k-cor:#f57c1f" data-kpi="faturamento">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>Faturamento (vendido)</div>
-      <div class="kpi-valor">R$ 0.000.000</div><div class="kpi-det">carregando</div><div class="kpi-spark"><canvas id="spFat"></canvas></div>
-    </div>
-    <div class="card kpi" style="--k-cor:#2563eb" data-kpi="vendas">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>Nº de vendas</div>
-      <div class="kpi-valor">000</div><div class="kpi-det">carregando</div><div class="kpi-spark"><canvas id="spQtd"></canvas></div>
-    </div>
-    <div class="card kpi" style="--k-cor:#8b5cf6" data-kpi="ticket">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>Ticket médio</div>
-      <div class="kpi-valor">R$ 00.000</div><div class="kpi-det">carregando</div>
-    </div>
-    <div class="card kpi" style="--k-cor:#0ea5e9" data-kpi="saldo">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg></span>Saldo em contas</div>
-      <div class="kpi-valor">R$ 00.000</div><div class="kpi-det">carregando</div>
-    </div>
-    <div class="card kpi" style="--k-cor:#16a34a" data-kpi="receber">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></span>A receber (em aberto)</div>
-      <div class="kpi-valor">R$ 000.000</div><div class="kpi-det">carregando</div>
-    </div>
-    <div class="card kpi" style="--k-cor:#dc2626" data-kpi="pagar">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></span>A pagar (em aberto)</div>
-      <div class="kpi-valor">R$ 00.000</div><div class="kpi-det">carregando</div>
-    </div>
-    <div class="card kpi" style="--k-cor:#f59e0b" data-kpi="inadimplencia">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Inadimplência</div>
-      <div class="kpi-valor">00%</div><div class="kpi-det">carregando</div>
-    </div>
-    <div class="card kpi" style="--k-cor:#0f2747" data-kpi="margem">
-      <div class="kpi-rot"><span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span>Margem de caixa</div>
-      <div class="kpi-valor">00%</div><div class="kpi-det">carregando</div>
-    </div>
+  <section class="kpis esqueleto" id="kpis" aria-label="Indicadores principais">
+    <article class="card kpi" data-kpi="faturamento"><h3 class="kpi-rot">Faturamento</h3><div class="kpi-valor">R$ 0,00 mi</div><div class="kpi-det">carregando</div></article>
+    <article class="card kpi" data-kpi="vendas"><h3 class="kpi-rot">Vendas</h3><div class="kpi-valor">000</div><div class="kpi-det">carregando</div></article>
+    <article class="card kpi" data-kpi="ticket"><h3 class="kpi-rot">Ticket médio</h3><div class="kpi-valor">R$ 00.000</div><div class="kpi-det">carregando</div></article>
+    <article class="card kpi" data-kpi="saldo"><h3 class="kpi-rot">Saldo em contas</h3><div class="kpi-valor">R$ 000 mil</div><div class="kpi-det">carregando</div></article>
+    <article class="card kpi" data-kpi="receber"><h3 class="kpi-rot">A receber</h3><div class="kpi-valor">R$ 000 mil</div><div class="kpi-det">carregando</div></article>
+    <article class="card kpi" data-kpi="pagar"><h3 class="kpi-rot">A pagar</h3><div class="kpi-valor">R$ 00 mil</div><div class="kpi-det">carregando</div></article>
+    <article class="card kpi" data-kpi="inadimplencia"><h3 class="kpi-rot">Inadimplência</h3><div class="kpi-valor">00%</div><div class="kpi-det">carregando</div></article>
+    <article class="card kpi" data-kpi="margem"><h3 class="kpi-rot">Margem de caixa</h3><div class="kpi-valor">00%</div><div class="kpi-det">carregando</div></article>
   </section>
 
-  <!-- Saude financeira -->
-  <section class="card esqueleto" style="margin-top:16px" id="blocoSaude" data-bloco>
-    <div class="saude-topo">
-      <div><h3>Saúde financeira</h3><div class="sub">Semáforo simples: verde está bem, amarelo pede atenção, vermelho precisa de ação.</div></div>
-      <div class="placar" id="placar"></div>
-    </div>
-    <div class="corpo"><div class="indicadores" id="indicadores">
-      <div class="ind"><div class="farol"><i></i><i></i><i></i></div><div><div class="ind-nome">…</div><div class="ind-valor">00%</div><div class="ind-frase">carregando indicador</div></div></div>
-      <div class="ind"><div class="farol"><i></i><i></i><i></i></div><div><div class="ind-nome">…</div><div class="ind-valor">00%</div><div class="ind-frase">carregando indicador</div></div></div>
-      <div class="ind"><div class="farol"><i></i><i></i><i></i></div><div><div class="ind-nome">…</div><div class="ind-valor">00%</div><div class="ind-frase">carregando indicador</div></div></div>
-    </div><div id="avisoSaude"></div></div>
-  </section>
-
-  <!-- Vendas -->
-  <h2 class="secao" id="secVendas">Vendas <small id="subVendas"></small></h2>
-  <div class="grade g-2-1">
-    <section class="card" data-bloco id="blocoFat">
-      <div class="card-topo"><div><h3>Faturamento mês a mês</h3><div class="sub">Vendido no CRM (Groner) e lançado na Conta Azul, com linha de tendência</div></div></div>
-      <div class="corpo"><div class="grafico"><canvas id="cFat"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-    <section class="card" data-bloco id="blocoPag">
-      <div class="card-topo"><div><h3>Como os clientes pagam</h3><div class="sub" id="subPag">Vendas da Conta Azul</div></div>
-        <div class="abas" id="abasPag"><button data-a="condicao" class="ativo">Condição</button><button data-a="forma">Forma</button><button data-a="entrada">Entradas</button></div></div>
-      <div class="corpo"><div class="grafico"><canvas id="cPag"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-  </div>
-  <div class="grade g-1-1">
-    <section class="card" data-bloco id="blocoTop">
-      <div class="card-topo"><div><h3>Maiores clientes</h3><div class="sub">Quanto cada cliente comprou no período</div></div>
-        <div class="abas" id="abasTop"><button data-a="groner" class="ativo">Groner</button><button data-a="ca">Conta Azul</button></div></div>
-      <div class="corpo"><div class="grafico"><canvas id="cTop"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-    <section class="card" data-bloco id="blocoOrig">
-      <div class="card-topo"><div><h3>De onde vêm as vendas</h3><div class="sub">Vendas aprovadas na Groner</div></div>
-        <div class="abas" id="abasOrig"><button data-a="origem" class="ativo">Origem</button><button data-a="vendedor">Vendedor</button></div></div>
-      <div class="corpo"><div class="grafico"><canvas id="cOrig"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-  </div>
-
-  <!-- Financeiro -->
-  <h2 class="secao">Dinheiro <small>entradas, saídas e o que vem pela frente (Conta Azul)</small></h2>
-  <div class="grade g-1-1">
-    <section class="card" data-bloco id="blocoFluxo">
-      <div class="card-topo"><div><h3>Entrou × saiu por mês</h3><div class="sub">Recebimentos e pagamentos realizados, pela data do pagamento</div></div></div>
-      <div class="corpo"><div class="grafico"><canvas id="cFluxo"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-    <section class="card" data-bloco id="blocoProj">
-      <div class="card-topo"><div><h3>Fluxo de caixa projetado</h3><div class="sub" id="subProj">Próximos 3 meses: o que vence a receber e a pagar</div></div></div>
-      <div class="corpo"><div class="grafico"><canvas id="cProj"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-  </div>
-  <div class="grade g-3">
-    <section class="card" data-bloco id="blocoAging">
-      <div class="card-topo"><div><h3>Recebíveis por atraso</h3><div class="sub" id="subAging">Quanto falta receber e há quanto tempo venceu</div></div></div>
-      <div class="corpo"><div class="grafico baixo"><canvas id="cAging"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-    <section class="card" data-bloco id="blocoDesp">
-      <div class="card-topo"><div><h3>Para onde vai o dinheiro</h3><div class="sub">Despesas do período</div></div>
-        <div class="abas" id="abasDesp"><button data-a="categoria" class="ativo">Categoria</button><button data-a="centro">Setor</button></div></div>
-      <div class="corpo"><div class="grafico baixo"><canvas id="cDesp"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
-    </section>
-    <section class="card" data-bloco id="blocoSaldos">
-      <div class="card-topo"><div><h3>Saldo nas contas</h3><div class="sub">Saldo atual de cada conta ativa</div></div></div>
-      <div class="corpo" id="saldos"><div class="indisp"><div class="spinner"></div></div></div>
-    </section>
-  </div>
-  <section class="card" style="margin-top:16px" data-bloco id="blocoContas">
-    <div class="card-topo"><div><h3>Contas para acompanhar</h3><div class="sub" id="subContas">Vencidas e que vencem nos próximos 30 dias</div></div>
-      <div class="abas" id="abasContas"><button data-a="rv" class="ativo">A receber vencido</button><button data-a="rp">A receber 30 dias</button><button data-a="pv">A pagar vencido</button><button data-a="pp">A pagar 30 dias</button></div></div>
-    <div class="corpo rolagem alta" id="contas"><div class="indisp"><div class="spinner"></div></div></div>
-  </section>
-
-  <!-- Comercial -->
-  <h2 class="secao" id="secComercial">Comercial <small>funil da Groner e integração com a Conta Azul</small></h2>
-  <div class="grade g-1-1">
-    <section class="card" data-bloco id="blocoFunil">
-      <div class="card-topo"><div><h3>Funil de vendas</h3><div class="sub">Do contato à venda, no período escolhido</div></div></div>
-      <div class="corpo" id="funil"><div class="indisp"><div class="spinner"></div></div></div>
-    </section>
-    <section class="card" data-bloco id="blocoInt">
-      <div class="card-topo"><div><h3>Integração Groner → Conta Azul</h3><div class="sub">Vendas aprovadas na Groner viram vendas na Conta Azul automaticamente</div></div></div>
-      <div class="corpo" id="integracao"><div class="indisp"><div class="spinner"></div></div></div>
-    </section>
-  </div>
-
-  <section class="card" style="margin-top:16px" data-bloco id="blocoTabela">
-    <div class="card-topo">
-      <div><h3>Vendas do período</h3><div class="sub" id="subTabela">Clique no título da coluna para ordenar</div></div>
-      <div class="busca">
-        <div class="abas" id="abasTabela"><button data-a="groner" class="ativo">Groner</button><button data-a="ca">Conta Azul</button></div>
-        <input type="search" id="busca" placeholder="Buscar cliente ou vendedor" aria-label="Buscar venda">
-      </div>
-    </div>
+  <section class="card saude esqueleto" id="blocoSaude" data-bloco aria-labelledby="tSaude">
+    <div class="card-topo"><h3 id="tSaude">Saúde financeira</h3><div class="placar" id="placar"></div></div>
     <div class="corpo">
-      <div class="rolagem"><table class="lista tabela-vendas"><thead id="theadVendas"></thead><tbody id="tbodyVendas"></tbody></table></div>
-      <div class="rodape-tabela"><span id="contagemTabela"></span><button class="btn-claro" id="maisLinhas">Mostrar mais</button></div>
+      <div class="pills" id="indicadores">
+        <div class="pill"><div class="pill-nome"><i class="dot"></i>…</div><div class="pill-linha">carregando</div></div>
+        <div class="pill"><div class="pill-nome"><i class="dot"></i>…</div><div class="pill-linha">carregando</div></div>
+        <div class="pill"><div class="pill-nome"><i class="dot"></i>…</div><div class="pill-linha">carregando</div></div>
+        <div class="pill"><div class="pill-nome"><i class="dot"></i>…</div><div class="pill-linha">carregando</div></div>
+        <div class="pill"><div class="pill-nome"><i class="dot"></i>…</div><div class="pill-linha">carregando</div></div>
+        <div class="pill"><div class="pill-nome"><i class="dot"></i>…</div><div class="pill-linha">carregando</div></div>
+      </div>
+      <div id="avisoSaude"></div>
     </div>
+  </section>
+
+  <section aria-labelledby="secVendas">
+    <header class="secao-topo"><h2 id="secVendas">Vendas</h2><p id="subVendas"></p></header>
+    <div class="grade g-principal">
+      <article class="card estica" data-bloco id="blocoFat">
+        <div class="card-topo"><div><h3>Faturamento mês a mês</h3><p class="sub">Vendido na Groner e lançado na Conta Azul</p></div></div>
+        <div class="corpo"><div class="grafico"><canvas id="cFat"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
+      </article>
+      <article class="card" data-bloco id="blocoPag">
+        <div class="card-topo"><div><h3>Como os clientes pagam</h3><p class="sub" id="subPag">Vendas da Conta Azul</p></div>
+          <div class="abas" id="abasPag"><button data-a="condicao" class="ativo">Condição</button><button data-a="forma">Forma</button><button data-a="entrada">Entradas</button></div></div>
+        <div class="corpo"><div class="rosca"><div class="grafico"><canvas id="cPag"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div><ul class="legenda" id="legPag"></ul></div></div>
+      </article>
+    </div>
+    <div class="grade g-par">
+      <article class="card" data-bloco id="blocoTop">
+        <div class="card-topo"><div><h3>Maiores clientes</h3><p class="sub">Valor comprado no período</p></div>
+          <div class="abas" id="abasTop"><button data-a="groner" class="ativo">Groner</button><button data-a="ca">Conta Azul</button></div></div>
+        <div class="corpo"><div class="grafico"><canvas id="cTop"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
+      </article>
+      <article class="card" data-bloco id="blocoOrig">
+        <div class="card-topo"><div><h3>De onde vêm as vendas</h3><p class="sub">Vendas aprovadas na Groner</p></div>
+          <div class="abas" id="abasOrig"><button data-a="origem" class="ativo">Origem</button><button data-a="vendedor">Vendedor</button></div></div>
+        <div class="corpo"><div class="grafico"><canvas id="cOrig"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="secFin">
+    <header class="secao-topo"><h2 id="secFin">Financeiro</h2><p>Conta Azul</p></header>
+    <div class="grade g-par">
+      <article class="card" data-bloco id="blocoFluxo">
+        <div class="card-topo"><div><h3>Entrou e saiu por mês</h3><p class="sub">Pelo dia do pagamento</p></div></div>
+        <div class="corpo"><div class="grafico"><canvas id="cFluxo"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
+      </article>
+      <article class="card" data-bloco id="blocoProj">
+        <div class="card-topo"><div><h3>Fluxo de caixa projetado</h3><p class="sub" id="subProj">Próximos meses</p></div></div>
+        <div class="corpo"><div class="grafico"><canvas id="cProj"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
+      </article>
+    </div>
+    <div class="grade g-3">
+      <article class="card" data-bloco id="blocoAging">
+        <div class="card-topo"><div><h3>Recebíveis por atraso</h3><p class="sub" id="subAging">Em aberto</p></div></div>
+        <div class="corpo"><div class="grafico baixo"><canvas id="cAging"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
+      </article>
+      <article class="card" data-bloco id="blocoDesp">
+        <div class="card-topo"><div><h3>Para onde vai o dinheiro</h3><p class="sub">Despesas do período</p></div>
+          <div class="abas" id="abasDesp"><button data-a="categoria" class="ativo">Categoria</button><button data-a="centro">Setor</button></div></div>
+        <div class="corpo"><div class="grafico baixo"><canvas id="cDesp"></canvas><div class="carregando-graf"><div class="spinner"></div></div></div></div>
+      </article>
+      <article class="card" data-bloco id="blocoSaldos">
+        <div class="card-topo"><div><h3>Saldo nas contas</h3><p class="sub">Saldo atual por conta</p></div></div>
+        <div class="corpo" id="saldos"><div class="indisp"><div class="spinner"></div></div></div>
+      </article>
+    </div>
+    <article class="card" style="margin-top:var(--gap)" data-bloco id="blocoContas">
+      <div class="card-topo"><div><h3>Contas para acompanhar</h3><p class="sub" id="subContas">Maiores valores primeiro</p></div>
+        <div class="abas" id="abasContas"><button data-a="rv" class="ativo">A receber vencido</button><button data-a="rp">A receber 30 dias</button><button data-a="pv">A pagar vencido</button><button data-a="pp">A pagar 30 dias</button></div></div>
+      <div class="corpo rolagem alta" id="contas"><div class="indisp"><div class="spinner"></div></div></div>
+    </article>
+  </section>
+
+  <section aria-labelledby="secComercial">
+    <header class="secao-topo"><h2 id="secComercial">Comercial</h2><p>Groner</p></header>
+    <div class="grade g-par">
+      <article class="card" data-bloco id="blocoFunil">
+        <div class="card-topo"><div><h3>Funil de vendas</h3><p class="sub">Do contato à venda no período</p></div></div>
+        <div class="corpo" id="funil"><div class="indisp"><div class="spinner"></div></div></div>
+      </article>
+      <article class="card" data-bloco id="blocoInt">
+        <div class="card-topo"><div><h3>Integração Groner → Conta Azul</h3><p class="sub">Vendas aprovadas viram vendas na Conta Azul</p></div></div>
+        <div class="corpo" id="integracao"><div class="indisp"><div class="spinner"></div></div></div>
+      </article>
+    </div>
+
+    <article class="card" style="margin-top:var(--gap)" data-bloco id="blocoTabela">
+      <div class="card-topo">
+        <div><h3>Vendas do período</h3><p class="sub" id="subTabela">Clique no título da coluna para ordenar</p></div>
+        <div class="busca">
+          <div class="abas" id="abasTabela"><button data-a="groner" class="ativo">Groner</button><button data-a="ca">Conta Azul</button></div>
+          <input type="search" id="busca" placeholder="Buscar cliente ou vendedor" aria-label="Buscar venda">
+        </div>
+      </div>
+      <div class="corpo">
+        <div class="rolagem"><table class="lista tabela-vendas"><thead id="theadVendas"></thead><tbody id="tbodyVendas"></tbody></table></div>
+        <div class="rodape-tabela"><span id="contagemTabela"></span><button class="btn" id="maisLinhas">Mostrar mais</button></div>
+      </div>
+    </article>
   </section>
 
   <footer id="rodape"></footer>
 </main>
 
-<div class="tela" id="tela"><div class="caixa">
-  <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><circle cx="32" cy="32" r="14" fill="#f9b316"/><g stroke="#f57c1f" stroke-width="4.5" stroke-linecap="round"><path d="M32 5v8M32 51v8M5 32h8M51 32h8M13 13l5.5 5.5M45.5 45.5 51 51M13 51l5.5-5.5M45.5 18.5 51 13"/></g></svg>
+<div class="tela" id="tela" role="alertdialog" aria-labelledby="telaTitulo"><div class="caixa">
+  <div class="marca-ico" style="margin:0 auto" aria-hidden="true"><i></i></div>
   <h2 id="telaTitulo">Não foi possível abrir o painel</h2>
   <p id="telaTexto"></p>
-  <button class="btn" id="telaBotao">Tentar de novo</button>
+  <button class="btn primario" id="telaBotao">Tentar de novo</button>
 </div></div>
 
 <script>
@@ -465,36 +470,42 @@ function brlCurto(v) {
 const pct = (v, casas = 1) => v == null || isNaN(v) ? "—" : v.toLocaleString("pt-BR", { maximumFractionDigits: casas }) + "%";
 const inteiro = (v) => v == null ? "—" : Number(v).toLocaleString("pt-BR");
 const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-const MESES_LONGOS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 const rotMes = (ym) => MESES[+ym.slice(5, 7) - 1] + "/" + ym.slice(2, 4);
-const mesLongo = (ym) => MESES_LONGOS[+ym.slice(5, 7) - 1];
 const dataBR = (d) => d ? d.slice(8, 10) + "/" + d.slice(5, 7) + "/" + d.slice(0, 4) : "—";
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ok = (b) => b && typeof b === "object" && !b.erro;
 const curto = (s, n = 24) => (s = String(s || "")).length > n ? s.slice(0, n - 1) + "…" : s;
 const $ = (id) => document.getElementById(id);
 const iso = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const PARTICULAS = new Set(["da", "de", "do", "das", "dos", "e"]);
+function nome(s) {
+  s = String(s == null ? "" : s);
+  if (!s || /[a-zà-ÿ]/.test(s)) return s;
+  return s.toLowerCase().replace(/\S+/g, (w, i) => (i && PARTICULAS.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)));
+}
+const frase = (s) => (s = String(s || ""), /[a-zà-ÿ]/.test(s) ? s : s.charAt(0) + s.slice(1).toLowerCase());
 
-const COR = { navy: "#0f2747", azul: "#2563eb", sol: "#f9b316", laranja: "#f57c1f", verde: "#16a34a", amarelo: "#f59e0b", vermelho: "#dc2626", cinza: "#cbd2de" };
-const PALETA = ["#f57c1f", "#0f2747", "#f9b316", "#2563eb", "#16a34a", "#8b5cf6", "#0ea5e9", "#ec4899", "#94a3b8", "#14b8a6"];
+const COR = { navy: "#16324f", navy2: "#3d5a80", navyClaro: "#b9c7d6", ambar: "#d97706", verde: "#16a34a", atencao: "#e0a100", vermelho: "#dc2626", cinza: "#d5dbe2" };
+const ROSCA = ["#16324f", "#3d5a80", "#6b8cb3", "#9db2cc", "#c9d5e3", "#8a94a3", "#b8bfc9", "#e1e5ea"];
 
 // ---------- Chart.js ----------
-Chart.defaults.font.family = "Inter, system-ui, sans-serif";
+Chart.defaults.font.family = "Inter, -apple-system, 'Segoe UI', sans-serif";
 Chart.defaults.font.size = 12;
-Chart.defaults.color = "#6b7489";
+Chart.defaults.color = "#6b7280";
 Chart.defaults.maintainAspectRatio = false;
-Chart.defaults.plugins.legend.labels.usePointStyle = true;
-Chart.defaults.plugins.legend.labels.boxWidth = 8;
-Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.animation.duration = 450;
+Object.assign(Chart.defaults.plugins.legend.labels, { usePointStyle: true, pointStyle: "circle", boxWidth: 6, boxHeight: 6, padding: 14, color: "#374151" });
 Chart.defaults.plugins.legend.labels.sort = (a, b) => a.datasetIndex - b.datasetIndex;
-Chart.defaults.plugins.tooltip.backgroundColor = "#0f2747";
-Chart.defaults.plugins.tooltip.padding = 10;
-Chart.defaults.plugins.tooltip.cornerRadius = 10;
-Chart.defaults.plugins.tooltip.titleFont = { weight: "700" };
-Chart.defaults.plugins.tooltip.boxPadding = 4;
-Chart.defaults.elements.bar.borderRadius = 6;
-Chart.defaults.scale.grid.color = "#eef1f6";
+Object.assign(Chart.defaults.plugins.tooltip, {
+  backgroundColor: "#ffffff", titleColor: "#111827", bodyColor: "#374151", footerColor: "#6b7280",
+  borderColor: "#e5e7eb", borderWidth: 1, padding: 10, cornerRadius: 8, boxPadding: 4, usePointStyle: true,
+  titleFont: { weight: "600" }, footerFont: { weight: "400", size: 11.5 },
+});
+Chart.defaults.elements.bar.borderRadius = 4;
+Chart.defaults.elements.line.tension = 0.3;
+Chart.defaults.scale.grid.color = "#f1f3f5";
 Chart.defaults.scale.border = { display: false };
+Chart.defaults.scale.ticks.color = "#9ca3af";
 
 Chart.register({
   id: "centro",
@@ -502,44 +513,48 @@ Chart.register({
     if (!opts || !opts.texto) return;
     const { ctx, chartArea: { left, right, top, bottom } } = chart;
     const x = (left + right) / 2, y = (top + bottom) / 2;
+    const tam = Math.max(11, Math.min(15, (right - left) * 0.085));
     ctx.save();
     ctx.textAlign = "center";
-    ctx.fillStyle = "#0f2747";
-    ctx.font = "800 17px Inter, sans-serif";
+    ctx.fillStyle = "#111827";
+    ctx.font = `600 ${tam}px Inter, sans-serif`;
     ctx.fillText(opts.texto, x, y + 2);
-    ctx.font = "500 11px Inter, sans-serif";
-    ctx.fillStyle = "#6b7489";
-    ctx.fillText(opts.sub || "", x, y + 19);
+    ctx.font = `400 ${tam - 4}px Inter, sans-serif`;
+    ctx.fillStyle = "#6b7280";
+    ctx.fillText(opts.sub || "", x, y + tam + 2);
     ctx.restore();
   },
 });
 
 const graficos = {};
 function grafico(id, config) {
-  if (graficos[id]) graficos[id].destroy();
   const canvas = $(id);
   const carregando = canvas.parentElement.querySelector(".carregando-graf");
   if (carregando) carregando.remove();
+  const atual = graficos[id];
+  if (atual && atual.canvas === canvas && atual.config.type === config.type) {
+    try {
+      atual.data = config.data;
+      atual.options = config.options || {};
+      atual.update("none");
+      return atual;
+    } catch (e) { console.warn(id, e); }
+  }
+  if (atual) atual.destroy();
   graficos[id] = new Chart(canvas, config);
   return graficos[id];
 }
-const eixoBRL = { ticks: { callback: (v) => brlCurto(v) } };
+const eixoBRL = { ticks: { callback: (v) => brlCurto(v), maxTicksLimit: 6 } };
 const tooltipBRL = (extra) => ({ callbacks: { label: (c) => ` ${c.dataset.label || c.label}: ${brl(c.parsed.y ?? c.parsed)}`, ...(extra || {}) } });
 const mobile = () => window.matchMedia("(max-width: 720px)").matches;
-
-function gradiente(ctx, area, de, ate) {
-  if (!area) return de;
-  const g = ctx.createLinearGradient(0, area.bottom, 0, area.top);
-  g.addColorStop(0, de);
-  g.addColorStop(1, ate);
-  return g;
-}
+const legendaTopo = () => ({ position: "top", align: mobile() ? "start" : "end" });
 
 // ---------- estado ----------
 let periodo = { tipo: "12" };
 let dados = null;
 const estadoAbas = { pag: "condicao", top: "groner", orig: "origem", desp: "categoria", contas: "rv", tabela: "groner" };
 const tabela = { ordem: "data", desc: true, limite: 12, busca: "" };
+const ORIGINAL = {};
 
 function calcularPeriodo() {
   const hoje = new Date();
@@ -550,24 +565,23 @@ function calcularPeriodo() {
   return { inicio: iso(d), fim };
 }
 
+function corpoDe(el) { return el.querySelector(".corpo") || el; }
+
 function indisponivel(bloco, msg) {
   const el = typeof bloco === "string" ? $(bloco) : bloco;
   if (!el) return;
-  const corpo = el.querySelector(".corpo") || el;
-  corpo.innerHTML = `<div class="indisp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><b>Dado indisponível</b><span>Não foi possível buscar esta informação agora.</span>${msg ? `<small>${esc(msg)}</small>` : ""}</div>`;
+  corpoDe(el).innerHTML = `<div class="indisp"><b>Dado indisponível</b><span>Não foi possível buscar esta informação agora.</span>${msg ? `<small>${esc(msg)}</small>` : ""}</div>`;
   el.dataset.indisp = "1";
 }
 
-function restaurarCanvas(blocoId, canvasId, baixo) {
+function seguro(blocoId, fn) {
   const el = $(blocoId);
-  if (!el.dataset.indisp) return;
-  delete el.dataset.indisp;
-  el.querySelector(".corpo").innerHTML = `<div class="grafico${baixo ? " baixo" : ""}"><canvas id="${canvasId}"></canvas></div>`;
-}
-
-function seguro(blocoId, fn, canvas, baixo) {
+  if (!(blocoId in ORIGINAL)) ORIGINAL[blocoId] = corpoDe(el).innerHTML;
   try {
-    if (canvas) restaurarCanvas(blocoId, canvas, baixo);
+    if (el.dataset.indisp) {
+      delete el.dataset.indisp;
+      corpoDe(el).innerHTML = ORIGINAL[blocoId];
+    }
     fn();
   } catch (e) {
     console.error(blocoId, e);
@@ -578,17 +592,17 @@ function seguro(blocoId, fn, canvas, baixo) {
 // ---------- carregamento ----------
 async function carregar(forcar) {
   if (!CHAVE) {
-    mostrarTela("Link incompleto", "Abra o painel pelo link completo que você recebeu (ele já contém a chave de acesso).", false);
+    mostrarTela("Link incompleto", "Abra o painel pelo link completo que você recebeu. Ele já contém a chave de acesso.", false);
     return;
   }
   const p = calcularPeriodo();
-  $("txtPeriodo").textContent = `${dataBR(p.inicio)} a ${dataBR(p.fim)}`;
+  $("txtPeriodo").textContent = `${dataBR(p.inicio)} – ${dataBR(p.fim)}`;
   const barra = $("barra");
   barra.className = "barra";
   void barra.offsetWidth;
   barra.className = "barra ativa";
   $("atualizar").classList.add("girando");
-  $("txtAtualizado").innerHTML = `<span class="ponto" style="background:#f9b316;box-shadow:0 0 0 3px rgba(249,179,22,.25)"></span>${forcar ? "Buscando dados novos na Conta Azul e na Groner…" : "Carregando…"}`;
+  $("txtAtualizado").textContent = forcar ? "Buscando dados novos na Conta Azul e na Groner…" : "Carregando…";
   try {
     const q = new URLSearchParams({ chave: CHAVE, inicio: p.inicio, fim: p.fim });
     if (forcar) q.set("atualizar", "1");
@@ -601,7 +615,7 @@ async function carregar(forcar) {
     renderizar();
   } catch (e) {
     if (!dados) mostrarTela("Não foi possível carregar", "Verifique a internet e tente de novo. Detalhe: " + e.message, true);
-    else $("txtAtualizado").innerHTML = `<span class="ponto" style="background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.2)"></span>Falha ao atualizar (${esc(e.message)}). Mostrando os dados anteriores.`;
+    else $("txtAtualizado").innerHTML = `<span class="neg">Falha ao atualizar (${esc(e.message)}). Mostrando os dados anteriores.</span>`;
   } finally {
     barra.className = "barra fim";
     $("atualizar").classList.remove("girando");
@@ -617,22 +631,21 @@ function mostrarTela(titulo, texto, botao) {
 
 function renderizar() {
   const d = dados;
-  const gerado = new Date(d.gerado_em);
-  const quando = gerado.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
-  $("txtAtualizado").innerHTML = `<span class="ponto"></span>Dados de <b>${quando}</b>${d.cache && d.cache.de_cache ? " · guardados há poucos minutos — clique em Atualizar para buscar agora" : ""}`;
+  const quando = new Date(d.gerado_em).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  $("txtAtualizado").innerHTML = `Atualizado <b>${quando}</b>${d.cache && d.cache.de_cache ? " · em cache por até 15 min" : ""}`;
   $("kpis").classList.remove("esqueleto");
   $("blocoSaude").classList.remove("esqueleto");
 
   seguro("kpis", renderKpis);
   seguro("blocoSaude", renderSaude);
-  seguro("blocoFat", renderFaturamento, "cFat");
-  seguro("blocoPag", renderPagamentos, "cPag");
-  seguro("blocoTop", renderTop, "cTop");
-  seguro("blocoOrig", renderOrigem, "cOrig");
-  seguro("blocoFluxo", renderFluxo, "cFluxo");
-  seguro("blocoProj", renderProjetado, "cProj");
-  seguro("blocoAging", renderAging, "cAging", true);
-  seguro("blocoDesp", renderDespesas, "cDesp", true);
+  seguro("blocoFat", renderFaturamento);
+  seguro("blocoPag", renderPagamentos);
+  seguro("blocoTop", renderTop);
+  seguro("blocoOrig", renderOrigem);
+  seguro("blocoFluxo", renderFluxo);
+  seguro("blocoProj", renderProjetado);
+  seguro("blocoAging", renderAging);
+  seguro("blocoDesp", renderDespesas);
   seguro("blocoSaldos", renderSaldos);
   seguro("blocoContas", renderContas);
   seguro("blocoFunil", renderFunil);
@@ -642,47 +655,40 @@ function renderizar() {
 }
 
 // ---------- KPIs ----------
-function kpi(nome, valor, det, negativo) {
-  const el = document.querySelector(`[data-kpi="${nome}"]`);
+function kpi(nomeKpi, valor, det, negativo) {
+  const el = document.querySelector(`[data-kpi="${nomeKpi}"]`);
   el.querySelector(".kpi-valor").textContent = valor;
   el.querySelector(".kpi-valor").classList.toggle("neg", !!negativo);
   el.querySelector(".kpi-det").innerHTML = det || "";
 }
-function sparkline(id, valores, cor) {
-  grafico(id, {
-    type: "line",
-    data: { labels: valores.map((_, i) => i), datasets: [{ data: valores, borderColor: cor, borderWidth: 2, tension: .4, pointRadius: 0, fill: true,
-      backgroundColor: (c) => gradiente(c.chart.ctx, c.chart.chartArea, cor + "00", cor + "33") }] },
-    options: { plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } }, animation: false },
-  });
-}
 
 function renderKpis() {
-  const d = dados, g = d.vendas_groner, ca = d.vendas_conta_azul, f = d.financeiro, s = d.saude;
+  const d = dados, g = d.vendas_groner, ca = d.vendas_conta_azul, f = d.financeiro, s = d.saude || {};
   const vendas = ok(g) && g.quantidade ? g : ok(ca) ? ca : null;
   if (vendas) {
-    const det = ok(ca) && vendas === g ? `Conta Azul: <b>${brlCurto(ca.total)}</b> em ${ca.quantidade} vendas lançadas` : `fonte: ${vendas.fonte}`;
-    kpi("faturamento", brlCurto(vendas.total), det);
-    kpi("vendas", inteiro(vendas.quantidade), `${vendas.por_mes.length ? (vendas.quantidade / vendas.por_mes.length).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) : "—"} por mês em média`);
+    const tri = s.crescimento_trimestre_pct != null;
+    const cresc = tri ? s.crescimento_trimestre_pct : s.crescimento_mm_pct;
+    kpi("faturamento", brlCurto(vendas.total), cresc != null
+      ? `<span class="var ${cresc >= 0 ? "pos" : "neg"}">${cresc > 0 ? "+" : ""}${pct(cresc)}</span> ${tri ? "no trimestre" : "no mês"}`
+      : vendas === g ? "Groner" : "Conta Azul");
+    kpi("vendas", inteiro(vendas.quantidade), `${vendas.por_mes.length ? (vendas.quantidade / vendas.por_mes.length).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) : "—"} por mês`);
     const melhor = [...vendas.por_mes].sort((a, b) => b.valor - a.valor)[0];
-    kpi("ticket", brl0(vendas.ticket_medio), melhor && melhor.valor ? `melhor mês: <b>${rotMes(melhor.mes)}</b> (${brlCurto(melhor.valor)})` : "");
-    sparkline("spFat", vendas.por_mes.map((m) => m.valor), COR.laranja);
-    sparkline("spQtd", vendas.por_mes.map((m) => m.quantidade), COR.azul);
+    kpi("ticket", brl0(vendas.ticket_medio), melhor && melhor.valor ? `Melhor mês: ${rotMes(melhor.mes)}` : "");
   } else {
-    ["faturamento", "vendas", "ticket"].forEach((k) => kpi(k, "—", "dado indisponível"));
+    ["faturamento", "vendas", "ticket"].forEach((k) => kpi(k, "—", "indisponível"));
   }
   if (ok(d.saldos)) {
-    const contas = d.saldos.contas.filter((c) => c.saldo);
-    kpi("saldo", brlCurto(d.saldos.total), contas.map((c) => `${esc(curto(c.nome, 16))}: <b>${brlCurto(c.saldo)}</b>`).join(" · ") || "todas zeradas", d.saldos.total < 0);
-  } else kpi("saldo", "—", "dado indisponível");
+    const n = d.saldos.contas.filter((c) => c.saldo != null).length;
+    kpi("saldo", brlCurto(d.saldos.total), `${n} ${n === 1 ? "conta" : "contas"}`, d.saldos.total < 0);
+  } else kpi("saldo", "—", "indisponível");
   if (ok(f)) {
-    kpi("receber", brlCurto(f.receber.aberto), `<b>${brlCurto(f.receber.vencido)}</b> já vencido · ${brlCurto(f.receber.proximos.d30)} em 30 dias`);
-    kpi("pagar", brlCurto(f.pagar.aberto), `<b>${brlCurto(f.pagar.vencido)}</b> vencido · ${brlCurto(f.pagar.proximos.d30)} em 30 dias`);
-    kpi("inadimplencia", pct(f.receber.inadimplencia_pct), `${f.receber.qtd_vencidos} parcelas vencidas sem baixa`);
-  } else ["receber", "pagar", "inadimplencia"].forEach((k) => kpi(k, "—", "dado indisponível"));
-  if (s && s.margem_pct != null) {
-    kpi("margem", pct(s.margem_pct), `entrou ${brlCurto(s.entradas_periodo)} · saiu ${brlCurto(s.saidas_periodo)}`, s.margem_pct < 0);
-  } else kpi("margem", "—", "dado indisponível");
+    kpi("receber", brlCurto(f.receber.aberto), `${brlCurto(f.receber.vencido)} vencido`);
+    kpi("pagar", brlCurto(f.pagar.aberto), `${brlCurto(f.pagar.vencido)} vencido`);
+    kpi("inadimplencia", pct(f.receber.inadimplencia_pct), `${f.receber.qtd_vencidos} parcelas vencidas`);
+  } else ["receber", "pagar", "inadimplencia"].forEach((k) => kpi(k, "—", "indisponível"));
+  if (s.margem_pct != null) {
+    kpi("margem", pct(s.margem_pct), `Entrou ${brlCurto(s.entradas_periodo)} · saiu ${brlCurto(s.saidas_periodo)}`, s.margem_pct < 0);
+  } else kpi("margem", "—", "indisponível");
 }
 
 // ---------- Saude ----------
@@ -691,6 +697,7 @@ function farol(valor, verde, amarelo, maiorMelhor = true) {
   if (maiorMelhor) return valor >= verde ? "verde" : valor >= amarelo ? "amarelo" : "vermelho";
   return valor <= verde ? "verde" : valor <= amarelo ? "amarelo" : "vermelho";
 }
+const num1 = (v) => v.toLocaleString("pt-BR", { maximumFractionDigits: 1 });
 
 function renderSaude() {
   const s = dados.saude || {};
@@ -700,56 +707,48 @@ function renderSaude() {
   if (s.margem_pct != null) {
     const sobra = Math.round(s.margem_pct);
     ind.push({ nome: "Margem de caixa", valor: pct(s.margem_pct), cor: farol(s.margem_pct, 15, 0),
-      frase: s.margem_pct >= 0
-        ? `Para cada R$ 100 que entraram, sobraram R$ ${sobra}. Entrou ${brlCurto(s.entradas_periodo)} e saiu ${brlCurto(s.saidas_periodo)}.`
-        : `Saiu mais do que entrou: para cada R$ 100 recebidos, saíram R$ ${100 - sobra}. Inclui empréstimos, retiradas e obras.` });
+      micro: s.margem_pct >= 0 ? `sobram R$ ${sobra} a cada R$ 100` : "saiu mais do que entrou",
+      detalhe: `Entrou ${brlCurto(s.entradas_periodo)} e saiu ${brlCurto(s.saidas_periodo)}, incluindo empréstimos, retiradas e obras.` });
   }
   if (s.inadimplencia_pct != null) {
     ind.push({ nome: "Inadimplência", valor: pct(s.inadimplencia_pct), cor: farol(s.inadimplencia_pct, 5, 15, false),
-      frase: `De cada R$ 100 que venceram no período, R$ ${Math.round(s.inadimplencia_pct)} ainda constam como não recebidos (${brlCurto(f ? f.receber.vencido : null)}).` });
+      micro: `${brlCurto(f ? f.receber.vencido : null)} vencidos`,
+      detalhe: `De cada R$ 100 que venceram no período, R$ ${Math.round(s.inadimplencia_pct)} ainda constam como não recebidos.` });
   }
   if (s.saldo_atual != null) {
     const c = s.cobertura_caixa_meses;
-    ind.push({ nome: "Reserva de caixa", valor: c == null ? "—" : (c < 0 ? "negativa" : c.toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + " meses"), cor: c == null ? "cinza" : farol(c, 3, 1),
-      frase: s.saldo_atual < 0
-        ? `O saldo somado das contas está negativo (${brlCurto(s.saldo_atual)}), então hoje não há reserva para cobrir as despesas (média de ${brlCurto(s.despesa_media_mensal)}/mês).`
-        : `O dinheiro em conta paga cerca de ${c == null ? "—" : c.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} meses das despesas médias (${brlCurto(s.despesa_media_mensal)}/mês).` });
+    ind.push({ nome: "Reserva de caixa", valor: c == null ? "—" : c < 0 ? "Negativa" : num1(c) + " meses", cor: c == null ? "cinza" : farol(c, 3, 1),
+      micro: s.saldo_atual < 0 ? "saldo em conta negativo" : "das despesas médias",
+      detalhe: `Saldo atual ${brlCurto(s.saldo_atual)}; despesa média de ${brlCurto(s.despesa_media_mensal)} por mês.` });
   }
   if (s.folego_90d != null) {
-    ind.push({ nome: "Fôlego para os próximos 90 dias", valor: s.folego_90d.toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "×", cor: farol(s.folego_90d, 1.2, 1),
-      frase: s.folego_90d >= 1
-        ? `Saldo + o que vai entrar em 90 dias cobre ${s.folego_90d.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} vezes as contas que vencem nesse prazo.`
-        : `O que tem em conta + o que vai entrar não cobre tudo o que vence para pagar em 90 dias.` });
+    ind.push({ nome: "Fôlego 90 dias", valor: num1(s.folego_90d) + "×", cor: farol(s.folego_90d, 1.2, 1),
+      micro: s.folego_90d >= 1 ? "cobre as contas a vencer" : "não cobre as contas a vencer",
+      detalhe: "Saldo em conta mais o que vai entrar em 90 dias, dividido pelo que vence para pagar no mesmo prazo." });
   }
   if (s.prazo_medio_recebimento_dias != null) {
-    ind.push({ nome: "Prazo médio de recebimento", valor: s.prazo_medio_recebimento_dias + " dias", cor: farol(s.prazo_medio_recebimento_dias, 30, 60, false),
-      frase: `Em média, o cliente paga ${s.prazo_medio_recebimento_dias} dias depois da venda (pelas parcelas lançadas na Conta Azul).` });
+    ind.push({ nome: "Prazo de recebimento", valor: s.prazo_medio_recebimento_dias + " dias", cor: farol(s.prazo_medio_recebimento_dias, 30, 60, false),
+      micro: "da venda ao pagamento", detalhe: "Média pelas parcelas lançadas na Conta Azul." });
   }
-  const cresc = s.crescimento_trimestre_pct != null ? s.crescimento_trimestre_pct : s.crescimento_mm_pct;
+  const tri = s.crescimento_trimestre_pct != null;
+  const cresc = tri ? s.crescimento_trimestre_pct : s.crescimento_mm_pct;
   if (cresc != null) {
-    const mm = s.crescimento_mm_pct != null && s.crescimento_mm_meses
-      ? ` ${mesLongo(s.crescimento_mm_meses[1])[0].toUpperCase() + mesLongo(s.crescimento_mm_meses[1]).slice(1)} contra ${mesLongo(s.crescimento_mm_meses[0])}: ${s.crescimento_mm_pct > 0 ? "+" : ""}${pct(s.crescimento_mm_pct, 0)}.` : "";
-    ind.push({ nome: s.crescimento_trimestre_pct != null ? "Crescimento das vendas (trimestre)" : "Crescimento das vendas (mês)", valor: (cresc > 0 ? "+" : "") + pct(cresc), cor: farol(cresc, 5, -5),
-      frase: (s.crescimento_trimestre_pct != null
-        ? `Os últimos 3 meses fechados venderam ${pct(Math.abs(cresc), 0)} ${cresc >= 0 ? "a mais" : "a menos"} que os 3 anteriores.`
-        : `O último mês fechado vendeu ${pct(Math.abs(cresc), 0)} ${cresc >= 0 ? "a mais" : "a menos"} que o anterior.`) + mm });
+    ind.push({ nome: "Crescimento das vendas", valor: (cresc > 0 ? "+" : "") + pct(cresc), cor: farol(cresc, 5, -5),
+      micro: tri ? "3 meses vs. 3 anteriores" : "mês vs. anterior",
+      detalhe: tri ? "Últimos 3 meses fechados contra os 3 anteriores." : "Último mês fechado contra o anterior." });
   }
   if (!ind.length) return indisponivel("blocoSaude");
 
   $("indicadores").innerHTML = ind.map((i) => `
-    <div class="ind"><div class="farol ${i.cor}" title="${i.cor}"><i></i><i></i><i></i></div>
-      <div><div class="ind-nome">${esc(i.nome)}</div><div class="ind-valor">${esc(i.valor)}</div><div class="ind-frase">${esc(i.frase)}</div></div></div>`).join("");
+    <div class="pill" title="${esc(i.detalhe)}"><div class="pill-nome"><i class="dot ${i.cor}"></i>${esc(i.nome)}</div>
+      <div class="pill-linha"><span class="pill-valor">${esc(i.valor)}</span><span class="pill-micro">${esc(i.micro)}</span></div></div>`).join("");
   const conta = (c) => ind.filter((i) => i.cor === c).length;
-  $("placar").innerHTML = `<span class="chip verde">● ${conta("verde")} bem</span><span class="chip amarelo">● ${conta("amarelo")} atenção</span><span class="chip vermelho">● ${conta("vermelho")} ação</span>`;
+  $("placar").innerHTML = `<span><i class="dot verde"></i>${conta("verde")} ok</span><span><i class="dot amarelo"></i>${conta("amarelo")} atenção</span><span><i class="dot vermelho"></i>${conta("vermelho")} crítico</span>`;
 
-  const avisos = [];
-  if (f && f.receber.vencido_possivelmente_pago > 0) {
-    avisos.push(`${f.receber.qtd_possivelmente_pago} parcela(s) vencida(s) somando ${brl0(f.receber.vencido_possivelmente_pago)} parecem já ter sido pagas (há um recebimento avulso do mesmo cliente e mesmo valor). Vale dar baixa na Conta Azul — isso reduz a inadimplência mostrada.`);
-  }
-  if (f && f.receber.vencido > 0) {
-    avisos.push(`Parte dos ${brlCurto(f.receber.vencido)} vencidos pode já ter entrado na conta sem ter sido conciliada com a parcela da venda. Conferir a lista "A receber vencido" abaixo ajuda a separar atraso real de falta de baixa.`);
-  }
-  $("avisoSaude").innerHTML = avisos.length ? `<div class="aviso">💡 ${avisos.map(esc).join("<br>")}</div>` : "";
+  const qp = f ? f.receber.qtd_possivelmente_pago : 0;
+  $("avisoSaude").innerHTML = f && f.receber.vencido_possivelmente_pago > 0
+    ? `<p class="nota"><i class="dot"></i><span>${qp === 1 ? "1 parcela vencida" : `${qp} parcelas vencidas`} (${brl0(f.receber.vencido_possivelmente_pago)}) ${qp === 1 ? "parece já paga" : "parecem já pagas"}: há recebimento avulso do mesmo cliente e valor. Dar baixa na Conta Azul reduz a inadimplência.</span></p>`
+    : "";
 }
 
 // ---------- Vendas ----------
@@ -776,15 +775,15 @@ function renderFaturamento() {
   const tend = tendencia(base.slice(0, Math.max(fechados, 2)));
   const tendCompleta = meses.map((_, i) => i < tend.length ? tend[i] : null);
   const ds = [];
-  if (sg) ds.push({ type: "bar", label: "Vendido (Groner)", data: sg, order: 2, maxBarThickness: 34,
-    backgroundColor: (c) => gradiente(c.chart.ctx, c.chart.chartArea, "#f9b316", "#f57c1f") });
-  if (sc) ds.push({ type: "bar", label: "Lançado na Conta Azul", data: sc, order: 3, maxBarThickness: 34, backgroundColor: "#1e3a6b" });
-  ds.push({ type: "line", label: "Tendência", data: tendCompleta, order: 1, borderColor: "#0f2747", borderDash: [6, 5], borderWidth: 2, pointRadius: 0, tension: 0 });
+  if (sg) ds.push({ type: "bar", label: "Vendido (Groner)", data: sg, order: 2, maxBarThickness: 26, backgroundColor: COR.navy });
+  if (sc) ds.push({ type: "bar", label: "Lançado na Conta Azul", data: sc, order: 3, maxBarThickness: 26, backgroundColor: COR.navyClaro });
+  ds.push({ type: "line", label: "Tendência", data: tendCompleta, order: 1, borderColor: COR.ambar, backgroundColor: COR.ambar, borderDash: [5, 4], borderWidth: 2, pointRadius: 0, tension: 0 });
   grafico("cFat", {
+    type: "bar",
     data: { labels: meses.map(rotMes), datasets: ds },
     options: {
       interaction: { mode: "index", intersect: false },
-      plugins: { legend: { position: "bottom" }, tooltip: tooltipBRL({
+      plugins: { legend: legendaTopo(), tooltip: tooltipBRL({
         label: (c) => c.dataset.label === "Tendência" ? ` Tendência: ${brlCurto(c.parsed.y)}` : ` ${c.dataset.label}: ${brl(c.parsed.y)}`,
         footer: (items) => {
           const i = items[0].dataIndex, partes = [];
@@ -792,33 +791,35 @@ function renderFaturamento() {
           if (sc) partes.push(`${qtd(ca, i)} na Conta Azul`);
           return partes.join(" · ") + (meses[i] === mesAtual ? " (mês em andamento)" : "");
         } }) },
-      scales: { y: eixoBRL, x: { grid: { display: false } } },
+      scales: { y: eixoBRL, x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkipPadding: 8 } } },
     },
   });
   const partes = [];
-  if (ok(g)) partes.push(`${g.quantidade} vendas na Groner (${brlCurto(g.total)})`);
+  if (ok(g)) partes.push(`${g.quantidade} vendas na Groner · ${brlCurto(g.total)}`);
   if (ok(ca)) partes.push(`${ca.quantidade} lançadas na Conta Azul${ca.primeira_venda ? " desde " + dataBR(ca.primeira_venda) : ""}`);
   $("subVendas").textContent = partes.join(" · ");
 }
 
-function rosca(id, fatias, sub, centroSub) {
+function rosca(id, legId, fatias, centroSub) {
   const total = fatias.reduce((s, f) => s + f.valor, 0);
+  const cores = fatias.map((_, i) => ROSCA[i % ROSCA.length]);
   grafico(id, {
     type: "doughnut",
-    data: { labels: fatias.map((f) => f.nome), datasets: [{ data: fatias.map((f) => f.valor), backgroundColor: PALETA, borderColor: "#fff", borderWidth: 3, hoverOffset: 8 }] },
+    data: { labels: fatias.map((f) => nome(f.nome)), datasets: [{ data: fatias.map((f) => f.valor), backgroundColor: cores, borderColor: "#fff", borderWidth: 2, hoverOffset: 4 }] },
     options: {
-      cutout: "64%",
+      cutout: "60%",
+      layout: { padding: 4 },
       plugins: {
-        legend: { position: "bottom" },
-        centro: { texto: brlCurto(total), sub: centroSub || "total" },
+        legend: { display: false },
+        centro: { texto: brlCurto(total), sub: centroSub },
         tooltip: { callbacks: { label: (c) => {
           const f = fatias[c.dataIndex];
-          return ` ${f.nome}: ${brl(f.valor)} (${pct(total ? f.valor / total * 100 : 0)}) · ${f.quantidade} ${f.quantidade === 1 ? "item" : "itens"}`;
+          return ` ${nome(f.nome)}: ${brl(f.valor)} (${pct(total ? f.valor / total * 100 : 0)}) · ${f.quantidade} ${f.quantidade === 1 ? "item" : "itens"}`;
         } } },
       },
     },
   });
-  if (sub) $("subPag").textContent = sub;
+  $(legId).innerHTML = fatias.map((f, i) => `<li><i style="background:${cores[i]}"></i><span class="leg-nome" title="${esc(nome(f.nome))}">${esc(nome(f.nome))}</span><span class="leg-pct">${pct(total ? f.valor / total * 100 : 0, 0)}</span></li>`).join("");
 }
 
 function renderPagamentos() {
@@ -826,27 +827,31 @@ function renderPagamentos() {
   const aba = estadoAbas.pag;
   if (aba === "entrada") {
     if (!ok(f)) throw new Error(f && f.erro);
-    rosca("cPag", f.receber.por_forma, "Dinheiro recebido no período, pela descrição do extrato", "recebido");
+    rosca("cPag", "legPag", f.receber.por_forma, "recebido");
+    $("subPag").textContent = "Recebido no período, pelo extrato";
   } else {
     if (!ok(ca)) throw new Error(ca && ca.erro);
-    if (aba === "condicao") rosca("cPag", ca.condicao_pagamento, "Vendas da Conta Azul: à vista ou parcelado", "vendido");
-    else rosca("cPag", ca.tipo_pagamento, "Vendas da Conta Azul: forma combinada na venda", "vendido");
+    rosca("cPag", "legPag", aba === "condicao" ? ca.condicao_pagamento : ca.tipo_pagamento, "vendido");
+    $("subPag").textContent = aba === "condicao" ? "Vendas da Conta Azul: à vista ou parcelado" : "Vendas da Conta Azul: forma combinada";
   }
 }
 
 function barrasH(id, fatias, cor, rotuloQtd, tamRotulo) {
   grafico(id, {
     type: "bar",
-    data: { labels: fatias.map((f) => curto(f.nome, mobile() ? 16 : tamRotulo || 26)), datasets: [{ label: "Valor", data: fatias.map((f) => f.valor), maxBarThickness: 22,
-      backgroundColor: (c) => { const a = c.chart.chartArea; if (!a) return cor; const g = c.chart.ctx.createLinearGradient(a.left, 0, a.right, 0); g.addColorStop(0, cor + "aa"); g.addColorStop(1, cor); return g; } }] },
+    data: { labels: fatias.map((f) => curto(nome(f.nome), mobile() ? 16 : tamRotulo || 26)),
+      datasets: [{ label: "Valor", data: fatias.map((f) => f.valor), maxBarThickness: 16, backgroundColor: cor, hoverBackgroundColor: COR.ambar }] },
     options: {
       indexAxis: "y",
       plugins: { legend: { display: false }, tooltip: { callbacks: {
-        title: (it) => fatias[it[0].dataIndex].nome,
+        title: (it) => nome(fatias[it[0].dataIndex].nome),
         label: (c) => ` ${brl(c.parsed.x)}`,
         afterLabel: (c) => ` ${fatias[c.dataIndex].quantidade} ${rotuloQtd || "vendas"}`,
       } } },
-      scales: { x: { ticks: { callback: (v) => brlCurto(v), maxTicksLimit: mobile() ? 3 : 4, maxRotation: 0 } }, y: { grid: { display: false } } },
+      scales: {
+        x: { beginAtZero: true, ticks: { callback: (v) => brlCurto(v), maxTicksLimit: mobile() ? 3 : 4, maxRotation: 0 } },
+        y: { grid: { display: false }, ticks: { color: "#374151" } },
+      },
     },
   });
 }
@@ -854,13 +859,13 @@ function barrasH(id, fatias, cor, rotuloQtd, tamRotulo) {
 function renderTop() {
   const b = estadoAbas.top === "groner" ? dados.vendas_groner : dados.vendas_conta_azul;
   if (!ok(b)) throw new Error(b && b.erro);
-  barrasH("cTop", b.top_clientes, estadoAbas.top === "groner" ? COR.laranja : "#1e3a6b");
+  barrasH("cTop", b.top_clientes, COR.navy);
 }
 
 function renderOrigem() {
   const g = dados.vendas_groner;
   if (!ok(g)) throw new Error(g && g.erro);
-  barrasH("cOrig", estadoAbas.orig === "origem" ? g.por_origem : g.por_vendedor, estadoAbas.orig === "origem" ? COR.azul : "#8b5cf6");
+  barrasH("cOrig", estadoAbas.orig === "origem" ? g.por_origem : g.por_vendedor, COR.navy2);
 }
 
 // ---------- Financeiro ----------
@@ -871,16 +876,18 @@ function renderFluxo() {
   const primeiro = r.findIndex((m) => m.entradas || m.saidas);
   r = primeiro >= 0 ? r.slice(primeiro) : r;
   grafico("cFluxo", {
+    type: "bar",
     data: {
       labels: r.map((m) => rotMes(m.mes)),
       datasets: [
-        { type: "line", label: "Resultado", data: r.map((m) => m.resultado), borderColor: COR.navy, backgroundColor: COR.navy, borderWidth: 2.5, tension: .35, pointRadius: 3.5, pointBackgroundColor: r.map((m) => m.resultado >= 0 ? COR.verde : COR.vermelho), order: 1 },
-        { type: "bar", label: "Entrou", data: r.map((m) => m.entradas), backgroundColor: "#22c55e", maxBarThickness: 26, order: 2 },
-        { type: "bar", label: "Saiu", data: r.map((m) => m.saidas), backgroundColor: "#f87171", maxBarThickness: 26, order: 3 },
+        { type: "line", label: "Resultado", data: r.map((m) => m.resultado), borderColor: COR.ambar, backgroundColor: COR.ambar, borderWidth: 2, pointRadius: 3, pointBorderWidth: 0,
+          pointBackgroundColor: r.map((m) => m.resultado >= 0 ? COR.verde : COR.vermelho), order: 1 },
+        { type: "bar", label: "Entrou", data: r.map((m) => m.entradas), backgroundColor: COR.navy, maxBarThickness: 18, order: 2 },
+        { type: "bar", label: "Saiu", data: r.map((m) => m.saidas), backgroundColor: COR.cinza, maxBarThickness: 18, order: 3 },
       ],
     },
-    options: { interaction: { mode: "index", intersect: false }, plugins: { legend: { position: "bottom" }, tooltip: tooltipBRL() },
-      scales: { y: eixoBRL, x: { grid: { display: false } } } },
+    options: { interaction: { mode: "index", intersect: false }, plugins: { legend: legendaTopo(), tooltip: tooltipBRL() },
+      scales: { y: eixoBRL, x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkipPadding: 8 } } } },
   });
 }
 
@@ -891,41 +898,44 @@ function renderProjetado() {
   const saldo0 = ok(s) ? s.total : 0;
   let acum = saldo0;
   const saldos = [saldo0, ...p.map((m) => (acum += m.entradas - m.saidas))];
-  const labels = ["hoje", ...p.map((m, i) => (i === 0 ? "resto de " : "") + rotMes(m.mes))];
+  const labels = ["hoje", ...p.map((m) => rotMes(m.mes))];
   grafico("cProj", {
+    type: "bar",
     data: {
       labels,
       datasets: [
-        { type: "line", label: "Saldo projetado", data: saldos, borderColor: COR.laranja, backgroundColor: COR.laranja, borderWidth: 3, tension: .3, pointRadius: 5, pointBackgroundColor: "#fff", pointBorderWidth: 2.5, order: 1 },
-        { type: "bar", label: "A receber", data: [null, ...p.map((m) => m.entradas)], backgroundColor: "#22c55e", maxBarThickness: 40, order: 2 },
-        { type: "bar", label: "A pagar", data: [null, ...p.map((m) => m.saidas)], backgroundColor: "#f87171", maxBarThickness: 40, order: 3 },
+        { type: "line", label: "Saldo projetado", data: saldos, borderColor: COR.navy, backgroundColor: "rgba(22, 50, 79, .07)", fill: "origin", borderWidth: 2, tension: .35,
+          pointRadius: 3, pointBackgroundColor: "#fff", pointBorderColor: COR.navy, pointBorderWidth: 2, order: 1 },
+        { type: "bar", label: "A receber", data: [null, ...p.map((m) => m.entradas)], backgroundColor: "#9db2cc", maxBarThickness: 24, order: 2 },
+        { type: "bar", label: "A pagar", data: [null, ...p.map((m) => m.saidas)], backgroundColor: "#e3e7ec", maxBarThickness: 24, order: 3 },
       ],
     },
-    options: { interaction: { mode: "index", intersect: false }, plugins: { legend: { position: "bottom" }, tooltip: tooltipBRL() },
+    options: { interaction: { mode: "index", intersect: false }, plugins: { legend: legendaTopo(), tooltip: tooltipBRL() },
       scales: { y: eixoBRL, x: { grid: { display: false } } } },
   });
-  $("subProj").textContent = `Parte do saldo atual (${brlCurto(saldo0)}). Fora da conta: ${brlCurto(f.fluxo_caixa.vencidos_receber)} vencidos a receber e ${brlCurto(f.fluxo_caixa.vencidos_pagar)} vencidos a pagar.`;
+  $("subProj").textContent = `A partir do saldo de hoje (${brlCurto(saldo0)}), sem contar vencidos`;
 }
 
 function renderAging() {
   const f = dados.financeiro;
   if (!ok(f)) throw new Error(f && f.erro);
   const a = f.receber.aging;
-  const fatias = [["Em dia", a.em_dia, COR.verde], ["1–30 dias", a.d1_30, COR.amarelo], ["31–60 dias", a.d31_60, COR.laranja], ["+60 dias", a.d60_mais, COR.vermelho]];
+  const d = mobile() ? " d" : " dias";
+  const fatias = [["Em dia", a.em_dia, COR.verde], ["1–30" + d, a.d1_30, COR.atencao], ["31–60" + d, a.d31_60, "#ea580c"], ["+60" + d, a.d60_mais, COR.vermelho]];
   grafico("cAging", {
     type: "bar",
-    data: { labels: fatias.map((x) => x[0]), datasets: [{ label: "Em aberto", data: fatias.map((x) => x[1]), backgroundColor: fatias.map((x) => x[2]), maxBarThickness: 46 }] },
+    data: { labels: fatias.map((x) => x[0]), datasets: [{ label: "Em aberto", data: fatias.map((x) => x[1]), backgroundColor: fatias.map((x) => x[2] + "d9"), hoverBackgroundColor: fatias.map((x) => x[2]), maxBarThickness: 36 }] },
     options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ` ${brl(c.parsed.y)} (${pct(f.receber.aberto ? c.parsed.y / f.receber.aberto * 100 : 0)})` } } },
-      scales: { y: eixoBRL, x: { grid: { display: false } } } },
+      scales: { y: eixoBRL, x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkip: false } } } },
   });
-  $("subAging").textContent = `${brlCurto(f.receber.aberto)} em aberto: ${brlCurto(f.receber.a_vencer)} ainda vão vencer e ${brlCurto(f.receber.vencido)} já venceram`;
+  $("subAging").textContent = `${brlCurto(f.receber.aberto)} em aberto · ${brlCurto(f.receber.vencido)} vencido`;
 }
 
 function renderDespesas() {
   const f = dados.financeiro;
   if (!ok(f)) throw new Error(f && f.erro);
   const fatias = estadoAbas.desp === "categoria" ? f.pagar.por_categoria : f.pagar.por_centro_custo;
-  barrasH("cDesp", fatias, COR.navy, "lançamentos", 20);
+  barrasH("cDesp", fatias, COR.navy2, "lançamentos", 20);
 }
 
 function renderSaldos() {
@@ -933,11 +943,14 @@ function renderSaldos() {
   if (!ok(s)) return indisponivel("blocoSaldos", s && s.erro);
   const max = Math.max(1, ...s.contas.map((c) => Math.abs(c.saldo || 0)));
   $("saldos").innerHTML = `
-    <div class="sub">Total</div><div class="saldo-total" style="color:${s.total < 0 ? "var(--vermelho)" : "var(--navy)"}">${brl(s.total)}</div>
-    <div style="margin-top:8px">${s.contas.map((c) => `
-      <div class="saldo-linha"><span>${esc(c.nome)}</span><b style="color:${(c.saldo || 0) < 0 ? "var(--vermelho)" : "var(--texto)"}">${c.saldo == null ? "indisponível" : brl(c.saldo)}</b>
-        <div class="saldo-barra"><span style="width:${Math.abs(c.saldo || 0) / max * 100}%;background:${(c.saldo || 0) < 0 ? "#f87171" : "linear-gradient(90deg,#f9b316,#f57c1f)"}"></span></div></div>`).join("")}</div>
-    ${s.total < 0 ? `<div class="aviso" style="margin-top:10px">Saldo negativo costuma indicar cheque especial/limite em uso ou extrato ainda não conciliado na Conta Azul.</div>` : ""}`;
+    <div class="saldo-total ${s.total < 0 ? "neg" : ""}">${brl(s.total)}</div>
+    <div class="saldo-rot">Total em ${s.contas.length} ${s.contas.length === 1 ? "conta" : "contas"}</div>
+    <ul class="saldo-lista">${s.contas.map((c) => {
+      const neg = (c.saldo || 0) < 0;
+      return `<li><div class="saldo-linha"><span>${esc(nome(c.nome))}</span><b class="${neg ? "neg" : ""}">${c.saldo == null ? "indisponível" : brl(c.saldo)}</b></div>
+        <div class="saldo-barra"><span style="width:${Math.abs(c.saldo || 0) / max * 100}%;background:${neg ? COR.vermelho : COR.navy}"></span></div></li>`;
+    }).join("")}</ul>
+    ${s.total < 0 ? `<p class="nota-peq">Saldo negativo costuma indicar limite em uso ou extrato não conciliado.</p>` : ""}`;
 }
 
 function renderContas() {
@@ -947,17 +960,17 @@ function renderContas() {
   const lista = { rv: f.receber.vencidos_lista, rp: f.receber.proximos_lista, pv: f.pagar.vencidos_lista, pp: f.pagar.proximos_lista }[aba];
   const quem = aba[0] === "r" ? "Cliente" : "Fornecedor";
   const vencido = aba[1] === "v";
+  const r = f.receber, p = f.pagar;
+  $("subContas").textContent = `A receber: ${brlCurto(r.vencido)} vencido, ${brlCurto(r.proximos.d30)} em 30 dias · A pagar: ${brlCurto(p.vencido)} vencido, ${brlCurto(p.proximos.d30)} em 30 dias`;
   if (!lista.length) {
-    $("contas").innerHTML = `<div class="indisp"><b>Nada por aqui 🎉</b><span>${vencido ? "Nenhuma conta vencida." : "Nada vence nos próximos 30 dias."}</span></div>`;
+    $("contas").innerHTML = `<div class="indisp" style="min-height:120px"><b>Nenhuma conta</b><span>${vencido ? "Nada vencido." : "Nada vence nos próximos 30 dias."}</span></div>`;
     return;
   }
   $("contas").innerHTML = `<table class="lista"><thead><tr><th>${quem}</th><th>Descrição</th><th>Vencimento</th>${vencido ? "<th>Atraso</th>" : ""}<th class="num">Valor</th></tr></thead><tbody>
-    ${lista.map((c) => `<tr><td><b>${esc(c.nome)}</b>${c.possivelmente_pago ? ` <span class="tag ok" title="Há um recebimento avulso do mesmo cliente e valor">talvez já pago</span>` : ""}</td>
+    ${lista.map((c) => `<tr><td class="forte">${esc(nome(c.nome))}${c.possivelmente_pago ? ` <span class="tag ok" title="Há um recebimento avulso do mesmo cliente e valor">talvez já pago</span>` : ""}</td>
       <td class="peq">${esc(c.descricao)}</td><td>${dataBR(c.vencimento)}</td>
-      ${vencido ? `<td><span class="chip ${c.dias_atraso > 60 ? "vermelho" : c.dias_atraso > 30 ? "amarelo" : "cinza"}">${c.dias_atraso} dias</span></td>` : ""}
-      <td class="num"><b>${brl(c.valor)}</b></td></tr>`).join("")}</tbody></table>`;
-  const r = f.receber, p = f.pagar;
-  $("subContas").textContent = `A receber: ${brlCurto(r.vencido)} vencido, ${brlCurto(r.proximos.d30)} em 30 dias · A pagar: ${brlCurto(p.vencido)} vencido, ${brlCurto(p.proximos.d30)} em 30 dias (maiores valores primeiro)`;
+      ${vencido ? `<td><span class="tag ${c.dias_atraso > 60 ? "erro" : c.dias_atraso > 30 ? "alerta" : ""}">${c.dias_atraso} dias</span></td>` : ""}
+      <td class="num forte">${brl(c.valor)}</td></tr>`).join("")}</tbody></table>`;
 }
 
 // ---------- Comercial ----------
@@ -967,50 +980,47 @@ function renderFunil() {
   const fechadas = fu.vendas_dos_projetos ?? fu.vendas;
   const conversao = fu.conversao_projetos_pct ?? fu.taxa_conversao_pct;
   const etapas = [
-    { nome: "Contatos (leads)", n: fu.leads, cor: "linear-gradient(90deg,#0f2747,#1e3a6b)" },
-    { nome: "Propostas aceitas", n: fu.propostas_aceitas, cor: "linear-gradient(90deg,#f9b316,#f59e0b)" },
-    { nome: "Vendas fechadas", n: fechadas, cor: "linear-gradient(90deg,#f57c1f,#ea580c)" },
+    { nome: "Contatos", n: fu.leads || 0, cor: COR.navy },
+    { nome: "Propostas aceitas", n: fu.propostas_aceitas || 0, cor: COR.navy2 },
+    { nome: "Vendas fechadas", n: fechadas || 0, cor: COR.ambar },
   ];
-  const max = Math.max(1, ...etapas.map((e) => e.n || 0));
-  let anterior = 108;
+  const max = Math.max(1, ...etapas.map((e) => e.n));
+  let anterior = 100;
   for (const e of etapas) {
-    e.w = Math.min(40 + 60 * Math.sqrt((e.n || 0) / max), anterior - 8);
+    e.w = Math.min(anterior, Math.max(2, e.n / max * 100));
     anterior = e.w;
   }
-  $("funil").innerHTML = `<div class="funil">${etapas.map((e, i) => `
-      ${i ? `<div class="conv">${etapas[i - 1].n && e.n <= etapas[i - 1].n ? `↓ ${pct(e.n / etapas[i - 1].n * 100, 0)} seguem` : "↓"}</div>` : ""}
-      <div class="etapa-f" style="width:${e.w}%;background:${e.cor}"><span><small>${e.nome}</small></span><span class="n">${inteiro(e.n)}</span></div>`).join("")}
+  $("funil").innerHTML = `
+    <div class="funil">${etapas.map((e, i) => `
+      <div><div class="f-rot"><span>${e.nome}${i && etapas[i - 1].n && e.n <= etapas[i - 1].n ? `<em>${pct(e.n / etapas[i - 1].n * 100, 0)} da etapa anterior</em>` : ""}</span><b>${inteiro(e.n)}</b></div>
+        <div class="f-trilha"><span style="width:${e.w}%;background:${e.cor}"></span></div></div>`).join("")}
     </div>
-    <div style="text-align:center;margin-top:12px"><span class="chip ${conversao >= 20 ? "verde" : conversao >= 10 ? "amarelo" : "vermelho"}" style="font-size:13px;padding:5px 12px">
-      Conversão: ${pct(conversao)} dos contatos viraram venda</span></div>
-    <div class="funil-extra">
-      <div><b>${inteiro(fu.projetos)}</b><span>projetos criados</span><small>Um contato pode ter mais de um projeto (orçamentos diferentes), e contatos antigos também ganham projetos novos.</small></div>
-      <div><b>${inteiro(fu.vendas)}</b><span>vendas aprovadas no período</span><small>Inclui vendas de projetos criados em meses anteriores${fu.vendas > fechadas ? ", por isso é maior que as vendas fechadas do funil" : ""}.</small></div>
+    <div class="mini">
+      <div><b>${pct(conversao)}</b><span>conversão</span></div>
+      <div><b>${inteiro(fu.projetos)}</b><span>projetos criados</span></div>
+      <div><b>${inteiro(fu.vendas)}</b><span>vendas aprovadas</span></div>
     </div>
-    <div class="sub" style="margin-top:12px">Onde estão hoje os projetos criados no período:</div>
-    <div class="etapas-lista" style="margin-top:6px">${fu.por_etapa.slice(0, 8).map((e) => `<span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${esc(e.cor || "#94a3b8")};margin-right:5px"></i>${esc(e.nome)}<b>${e.quantidade}</b></span>`).join("")}</div>`;
+    <p class="nota-peq">Um contato pode ter mais de um projeto. As vendas aprovadas incluem projetos de meses anteriores.</p>
+    <div class="etapas"><span class="etapas-rot">Etapa atual dos projetos</span>${fu.por_etapa.slice(0, 8).map((e) => `<span class="chip">${esc(frase(e.nome))} <b>${e.quantidade}</b></span>`).join("")}</div>`;
 }
 
 function renderIntegracao() {
   const it = dados.integracao;
   if (!ok(it)) return indisponivel("blocoInt", it && it.erro);
   const u = it.ultima_execucao;
-  const bom = u && u.status === "sucesso";
+  const estado = !u ? ["cinza", "Ainda não rodou"] : u.status === "sucesso" ? ["verde", "Funcionando"] : u.status === "concluida_com_erros" ? ["amarelo", "Funcionando, com avisos"] : ["vermelho", "Com problema"];
   const quando = u ? new Date(u.iniciado_em).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
   $("integracao").innerHTML = `
-    <div class="status-int"><div class="ico" style="background:${bom ? "#dcfce7" : "#fef3c7"};color:${bom ? "#15803d" : "#b45309"}">
-      ${bom ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 8v5"/><path d="M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>`}</div>
-      <div><b>${u ? (bom ? "Funcionando" : u.status === "concluida_com_erros" ? "Funcionando, com avisos" : "Com problema") : "Ainda não rodou"}</b>
-        <div class="sub">Última verificação: ${quando} · ${it.modo === "real" ? "lançando de verdade" : "modo teste"} · roda de hora em hora</div></div></div>
-    <div class="mini-kpis"><div><b>${it.vendas_lancadas}</b><span>vendas lançadas</span></div><div><b>${it.execucoes_24h}</b><span>verificações em 24h</span></div><div><b>${it.pendencias.length}</b><span>pendências</span></div></div>
+    <div class="status"><i class="dot ${estado[0]}"></i><b>${estado[1]}</b><span>Última verificação ${quando} · ${it.modo === "real" ? "lançando de verdade" : "modo teste"} · a cada hora</span></div>
+    <div class="mini"><div><b>${it.vendas_lancadas}</b><span>vendas lançadas</span></div><div><b>${it.execucoes_24h}</b><span>verificações em 24h</span></div><div><b>${it.pendencias.length}</b><span>pendências</span></div></div>
     ${it.lancadas.length ? `<div class="rolagem"><table class="lista"><thead><tr><th>Nº CA</th><th>Cliente</th><th>Data</th><th class="num">Valor</th></tr></thead><tbody>
-      ${it.lancadas.slice(0, 6).map((l) => `<tr><td>${l.numero_conta_azul ?? "—"}</td><td>${esc(l.cliente || "—")}</td><td>${dataBR(l.data)}</td><td class="num">${brl(l.valor)}</td></tr>`).join("")}</tbody></table></div>` : ""}
-    ${it.pendencias.length ? `<div class="aviso" style="margin-top:10px"><b>Pendências:</b><br>${it.pendencias.slice(0, 4).map((p) => `${esc(p.cliente || "Venda " + p.groner_sale_id)} — ${esc(p.detalhe)}`).join("<br>")}</div>` : ""}`;
+      ${it.lancadas.slice(0, 6).map((l) => `<tr><td>${l.numero_conta_azul ?? "—"}</td><td class="forte">${esc(nome(l.cliente) || "—")}</td><td>${dataBR(l.data)}</td><td class="num">${brl(l.valor)}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${it.pendencias.length ? `<p class="nota"><i class="dot"></i><span>${it.pendencias.slice(0, 4).map((p) => `${esc(nome(p.cliente) || "Venda " + p.groner_sale_id)}: ${esc(p.detalhe)}`).join("<br>")}</span></p>` : ""}`;
 }
 
 // ---------- Tabela de vendas ----------
 const COLUNAS = {
-  groner: [["data", "Data"], ["cliente", "Cliente"], ["vendedor", "Vendedor"], ["origem", "Origem"], ["status", "Status"], ["valor", "Valor", "num"]],
+  groner: [["data", "Data"], ["cliente", "Cliente"], ["vendedor", "Vendedor"], ["origem", "Origem"], ["status", "Situação"], ["valor", "Valor", "num"]],
   ca: [["numero", "Nº"], ["data", "Data"], ["cliente", "Cliente"], ["condicao", "Condição"], ["tipo_pagamento", "Forma"], ["situacao", "Situação"], ["valor", "Valor", "num"]],
 };
 
@@ -1018,7 +1028,7 @@ function renderTabela() {
   const fonte = estadoAbas.tabela;
   const b = fonte === "groner" ? dados.vendas_groner : dados.vendas_conta_azul;
   const cols = COLUNAS[fonte];
-  $("theadVendas").innerHTML = `<tr>${cols.map(([k, t, c]) => `<th data-ord="${k}" class="${c || ""} ${tabela.ordem === k ? "ord" : ""}">${t}<span class="seta">${tabela.ordem === k ? (tabela.desc ? "▼" : "▲") : "↕"}</span></th>`).join("")}</tr>`;
+  $("theadVendas").innerHTML = `<tr>${cols.map(([k, t, c]) => `<th data-ord="${k}" class="${c || ""} ${tabela.ordem === k ? "ord" : ""}">${t}<span class="seta">${tabela.ordem === k ? (tabela.desc ? "↓" : "↑") : "↕"}</span></th>`).join("")}</tr>`;
   if (!ok(b)) {
     $("tbodyVendas").innerHTML = `<tr><td colspan="${cols.length}"><div class="indisp"><b>Dado indisponível</b><small>${esc(b && b.erro)}</small></div></td></tr>`;
     $("contagemTabela").textContent = "";
@@ -1036,27 +1046,27 @@ function renderTabela() {
   const total = linhas.reduce((s, v) => s + (v.valor || 0), 0);
   const visiveis = linhas.slice(0, tabela.limite);
   const cel = (v, key) => {
-    if (key === "valor") return `<b>${brl(v.valor)}</b>`;
+    if (key === "valor") return brl(v.valor);
     if (key === "data") return dataBR(v.data);
-    if (key === "status" || key === "situacao") return `<span class="tag ${/aprov/i.test(v[key]) ? "ok" : "alerta"}">${esc(v[key])}</span>`;
-    if (key === "cliente") return `<b>${esc(v.cliente)}</b>`;
+    if (key === "status" || key === "situacao") return `<span class="tag ${/aprov|fatur|conclu/i.test(v[key]) ? "ok" : /cancel|recus/i.test(v[key]) ? "erro" : "alerta"}">${esc(frase(v[key]))}</span>`;
+    if (key === "cliente" || key === "vendedor") return esc(nome(v[key]) || "—");
     return esc(v[key] ?? "—");
   };
   $("tbodyVendas").innerHTML = visiveis.length
-    ? visiveis.map((v) => `<tr>${cols.map(([key, , c]) => `<td class="${c || ""}">${cel(v, key)}</td>`).join("")}</tr>`).join("")
+    ? visiveis.map((v) => `<tr>${cols.map(([key, , c]) => `<td class="${c || ""}${key === "cliente" || key === "valor" ? " forte" : ""}">${cel(v, key)}</td>`).join("")}</tr>`).join("")
     : `<tr><td colspan="${cols.length}"><div class="indisp" style="min-height:90px"><b>Nenhuma venda encontrada</b><span>Tente outro termo de busca.</span></div></td></tr>`;
-  $("contagemTabela").innerHTML = `Mostrando ${visiveis.length} de ${linhas.length} vendas · total ${termo ? "filtrado" : "do período"}: <b>${brl(total)}</b>`;
+  $("contagemTabela").innerHTML = `${visiveis.length} de ${linhas.length} vendas · total ${termo ? "filtrado" : "do período"} <b>${brl(total)}</b>`;
   $("maisLinhas").style.display = linhas.length > tabela.limite ? "" : "none";
-  $("subTabela").textContent = fonte === "groner" ? "Vendas aprovadas no CRM Groner · clique no título da coluna para ordenar" : "Vendas lançadas na Conta Azul · clique no título da coluna para ordenar";
+  $("subTabela").textContent = fonte === "groner" ? "Aprovadas na Groner · clique na coluna para ordenar" : "Lançadas na Conta Azul · clique na coluna para ordenar";
 }
 
 function renderRodape() {
   const d = dados, notas = [];
   if (ok(d.vendas_groner)) notas.push("Vendas e funil: CRM Groner (vendas aprovadas, contatos e projetos criados no período).");
-  if (ok(d.vendas_conta_azul)) notas.push(`Vendas lançadas, condição e forma de pagamento: Conta Azul${d.vendas_conta_azul.primeira_venda ? ` (vendas registradas a partir de ${dataBR(d.vendas_conta_azul.primeira_venda)})` : ""}.`);
-  if (ok(d.financeiro)) notas.push(`Recebimentos, pagamentos, vencidos e projeção: contas a receber e a pagar da Conta Azul${d.financeiro.receber.primeiro_lancamento ? ` (lançamentos a partir de ${dataBR(d.financeiro.receber.primeiro_lancamento)})` : ""}. "Entradas" por forma é deduzida da descrição do extrato.`);
-  notas.push("Margem de caixa = (tudo que entrou − tudo que saiu) ÷ tudo que entrou, incluindo empréstimos, retiradas de sócios e obras. Saldos: saldo atual informado pela Conta Azul.");
-  $("rodape").innerHTML = `<b>De onde vêm os números</b><ul>${notas.map((n) => `<li>${esc(n)}</li>`).join("")}</ul><p style="margin-top:10px">Gerasol Energia Solar · painel atualizado automaticamente (os dados ficam guardados por 15 minutos).</p>`;
+  if (ok(d.vendas_conta_azul)) notas.push(`Vendas lançadas, condição e forma de pagamento: Conta Azul${d.vendas_conta_azul.primeira_venda ? `, a partir de ${dataBR(d.vendas_conta_azul.primeira_venda)}` : ""}.`);
+  if (ok(d.financeiro)) notas.push(`Recebimentos, pagamentos, vencidos e projeção: contas a receber e a pagar da Conta Azul${d.financeiro.receber.primeiro_lancamento ? `, a partir de ${dataBR(d.financeiro.receber.primeiro_lancamento)}` : ""}. Entradas por forma vêm da descrição do extrato.`);
+  notas.push("Margem de caixa = (entradas − saídas) ÷ entradas, incluindo empréstimos, retiradas de sócios e obras. Saldos: saldo atual informado pela Conta Azul.");
+  $("rodape").innerHTML = `<details><summary>Fontes e definições</summary><ul>${notas.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></details><p>Gerasol Energia Solar · dados guardados por até 15 minutos</p>`;
 }
 
 // ---------- interacoes ----------
@@ -1069,10 +1079,10 @@ function ligarAbas(idAbas, chave, render) {
     render();
   });
 }
-ligarAbas("abasPag", "pag", () => seguro("blocoPag", renderPagamentos, "cPag"));
-ligarAbas("abasTop", "top", () => seguro("blocoTop", renderTop, "cTop"));
-ligarAbas("abasOrig", "orig", () => seguro("blocoOrig", renderOrigem, "cOrig"));
-ligarAbas("abasDesp", "desp", () => seguro("blocoDesp", renderDespesas, "cDesp", true));
+ligarAbas("abasPag", "pag", () => seguro("blocoPag", renderPagamentos));
+ligarAbas("abasTop", "top", () => seguro("blocoTop", renderTop));
+ligarAbas("abasOrig", "orig", () => seguro("blocoOrig", renderOrigem));
+ligarAbas("abasDesp", "desp", () => seguro("blocoDesp", renderDespesas));
 ligarAbas("abasContas", "contas", () => seguro("blocoContas", renderContas));
 ligarAbas("abasTabela", "tabela", () => { tabela.limite = 12; tabela.ordem = "data"; tabela.desc = true; renderTabela(); });
 
@@ -1112,7 +1122,7 @@ $("atualizar").addEventListener("click", () => carregar(true));
 $("telaBotao").addEventListener("click", () => { $("tela").classList.remove("aberta"); carregar(false); });
 
 let tResize;
-window.addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(() => { if (dados) { seguro("blocoTop", renderTop, "cTop"); seguro("blocoOrig", renderOrigem, "cOrig"); seguro("blocoDesp", renderDespesas, "cDesp", true); } }, 300); });
+window.addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(() => { if (dados) { seguro("blocoFat", renderFaturamento); seguro("blocoTop", renderTop); seguro("blocoOrig", renderOrigem); seguro("blocoFluxo", renderFluxo); seguro("blocoProj", renderProjetado); seguro("blocoAging", renderAging); seguro("blocoDesp", renderDespesas); } }, 300); });
 
 if (typeof Chart === "undefined") mostrarTela("Não foi possível carregar", "A biblioteca de gráficos não carregou. Verifique a internet e recarregue a página.", false);
 else carregar(false);
