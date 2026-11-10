@@ -165,6 +165,11 @@
   .lista tbody tr:hover td { background: #f9fafb; }
   .lista tr:last-child td { border-bottom: 0; }
   .lista .num { text-align: right; white-space: nowrap; }
+  .th-ord { display: inline-flex; align-items: center; gap: 5px; }
+  .ords { display: inline-flex; flex-direction: column; line-height: 1; }
+  .ord-btn { border: 0; background: none; padding: 0; margin: 0; cursor: pointer; color: #d1d5db; font-size: 9px; line-height: 1; height: 9px; }
+  .ord-btn.on { color: var(--primaria); }
+  .ord-btn:hover { color: var(--texto); }
   .lista .peq { color: var(--suave); font-size: 12.5px; }
   .rolagem { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -20px; padding: 0 8px; }
   .rolagem.alta { max-height: 380px; overflow-y: auto; }
@@ -972,6 +977,28 @@ function renderSaldos() {
     ${s.total < 0 ? `<p class="nota-peq">Saldo negativo costuma indicar limite em uso ou extrato não conciliado.</p>` : ""}`;
 }
 
+const contasOrd = { col: null, desc: true };
+
+function setasConta(col) {
+  const ativa = contasOrd.col === col;
+  const btn = (desc) => {
+    const on = ativa && contasOrd.desc === desc;
+    return `<button type="button" class="ord-btn${on ? " on" : ""}" data-col="${col}" data-desc="${desc ? "1" : "0"}" aria-label="${desc ? "maior primeiro" : "menor primeiro"}" aria-pressed="${on}">${desc ? "↓" : "↑"}</button>`;
+  };
+  return `<span class="ords">${btn(false)}${btn(true)}</span>`;
+}
+
+function ordenarContas(lista) {
+  const col = contasOrd.col;
+  if (!col) return lista;
+  return lista.slice().sort((a, b) => {
+    const x = col === "vencimento" ? (a.vencimento || "") : col === "atraso" ? (a.dias_atraso || 0) : (a.valor || 0);
+    const y = col === "vencimento" ? (b.vencimento || "") : col === "atraso" ? (b.dias_atraso || 0) : (b.valor || 0);
+    const r = typeof x === "number" ? x - y : String(x).localeCompare(String(y));
+    return contasOrd.desc ? -r : r;
+  });
+}
+
 function renderContas() {
   const f = dados.financeiro;
   if (!ok(f)) return indisponivel("blocoContas", f && f.erro);
@@ -979,14 +1006,16 @@ function renderContas() {
   const lista = { rv: f.receber.vencidos_lista, rp: f.receber.proximos_lista, pv: f.pagar.vencidos_lista, pp: f.pagar.proximos_lista }[aba];
   const quem = aba[0] === "r" ? "Cliente" : "Fornecedor";
   const vencido = aba[1] === "v";
+  if (contasOrd.col === "atraso" && !vencido) contasOrd.col = null;
   const r = f.receber, p = f.pagar;
   $("subContas").textContent = `A receber: ${brlCurto(r.vencido)} vencido, ${brlCurto(r.proximos.d30)} em 30 dias · A pagar: ${brlCurto(p.vencido)} vencido, ${brlCurto(p.proximos.d30)} em 30 dias`;
   if (!lista.length) {
     $("contas").innerHTML = `<div class="indisp" style="min-height:120px"><b>Nenhuma conta</b><span>${vencido ? "Nada vencido." : "Nada vence nos próximos 30 dias."}</span></div>`;
     return;
   }
-  $("contas").innerHTML = `<table class="lista"><thead><tr><th>${quem}</th><th>Descrição</th><th>Vencimento</th>${vencido ? "<th>Atraso</th>" : ""}<th class="num">Valor</th></tr></thead><tbody>
-    ${lista.map((c) => `<tr><td class="forte">${esc(nome(c.nome))}${c.possivelmente_pago ? ` <span class="tag ok" title="Há um recebimento avulso do mesmo cliente e valor">talvez já pago</span>` : ""}</td>
+  const linhas = ordenarContas(lista);
+  $("contas").innerHTML = `<table class="lista"><thead><tr><th>${quem}</th><th>Descrição</th><th><span class="th-ord">Vencimento${setasConta("vencimento")}</span></th>${vencido ? `<th><span class="th-ord">Atraso${setasConta("atraso")}</span></th>` : ""}<th class="num"><span class="th-ord">Valor${setasConta("valor")}</span></th></tr></thead><tbody>
+    ${linhas.map((c) => `<tr><td class="forte">${esc(nome(c.nome))}${c.possivelmente_pago ? ` <span class="tag ok" title="Há um recebimento avulso do mesmo cliente e valor">talvez já pago</span>` : ""}</td>
       <td class="peq">${esc(c.descricao)}</td><td>${dataBR(c.vencimento)}</td>
       ${vencido ? `<td><span class="tag ${c.dias_atraso > 60 ? "erro" : c.dias_atraso > 30 ? "alerta" : ""}">${c.dias_atraso} dias</span></td>` : ""}
       <td class="num forte">${brl(c.valor)}</td></tr>`).join("")}</tbody></table>`;
@@ -1103,6 +1132,13 @@ ligarAbas("abasTop", "top", () => seguro("blocoTop", renderTop));
 ligarAbas("abasOrig", "orig", () => seguro("blocoOrig", renderOrigem));
 ligarAbas("abasDesp", "desp", () => seguro("blocoDesp", renderDespesas));
 ligarAbas("abasContas", "contas", () => seguro("blocoContas", renderContas));
+$("contas").addEventListener("click", (e) => {
+  const b = e.target.closest(".ord-btn");
+  if (!b || !dados) return;
+  contasOrd.col = b.dataset.col;
+  contasOrd.desc = b.dataset.desc === "1";
+  renderContas();
+});
 ligarAbas("abasTabela", "tabela", () => { tabela.limite = 12; tabela.ordem = "data"; tabela.desc = true; renderTabela(); });
 
 $("theadVendas").addEventListener("click", (e) => {
