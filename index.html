@@ -30,6 +30,8 @@
     --verde: #20a859;
     --atencao: #e9c630;
     --vermelho: #d93025;
+    --marinho: #163a5f;
+    --marinho-claro: #eef3f9;
     --cinza: #c9cfd5;
     --raio: 10px;
     --sombra: 0 1px 2px rgba(16, 24, 40, .04);
@@ -211,6 +213,39 @@
   .status span { color: var(--suave); font-size: 12.5px; }
   #integracao .mini { margin: 14px 0 6px; }
 
+  /* ---------- paginas (abas) ---------- */
+  .paginas { display: inline-flex; background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .28); border-radius: 8px; padding: 2px; margin: 2px 0 16px; }
+  .paginas button { border: 0; background: transparent; color: #fff; padding: 5px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .12s; }
+  .paginas button:hover { background: rgba(255, 255, 255, .14); }
+  .paginas button.ativo { background: #fff; color: var(--primaria-escura); font-weight: 600; }
+
+  /* ---------- insights ---------- */
+  .ins-resumo ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .ins-resumo li { display: flex; gap: 9px; font-size: 13.5px; color: var(--texto-2); line-height: 1.5; }
+  .ins-resumo li b { color: var(--texto); font-weight: 600; }
+  .ins-resumo .dot { margin-top: 6px; }
+  .ins-card { border-top: 3px solid var(--borda-forte); }
+  .ins-card.pos { border-top-color: var(--primaria); }
+  .ins-card.ale { border-top-color: var(--atencao); }
+  .ins-card.acao { border-top-color: var(--marinho); background: var(--marinho-claro); }
+  .ins-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .ins-item { display: flex; gap: 8px; font-size: 13px; color: var(--texto-2); line-height: 1.45; }
+  .ins-item b { color: var(--texto); font-weight: 600; }
+  .ins-item .dot { margin-top: 5px; }
+  .ins-vazio { font-size: 13px; color: var(--suave); }
+  .ins-acao-titulo { font-size: 15px; font-weight: 600; color: var(--marinho); line-height: 1.4; margin-bottom: 6px; }
+  .ins-acao-detalhe { font-size: 13px; color: var(--texto-2); line-height: 1.5; }
+  .ins-acao-porque { font-size: 12px; color: var(--suave); margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cdd8e4; }
+  .ins-num { font-size: 22px; font-weight: 600; letter-spacing: -.02em; color: var(--texto); font-variant-numeric: tabular-nums; }
+  .ins-num-rot { font-size: 12px; color: var(--suave); margin-top: 2px; }
+  .ins-passos { margin: 10px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--texto-2); }
+  .ins-passos li { margin: 4px 0; }
+  .ins-margens { display: flex; flex-direction: column; gap: 10px; }
+  .ins-margem-linha { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 12.5px; color: var(--texto-2); }
+  .ins-margem-linha .f-trilha { height: 8px; }
+  .ins-margem-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--texto); white-space: nowrap; }
+  .ins-margem-val.neg { color: var(--vermelho); }
+
   /* ---------- tabela de vendas ---------- */
   .busca { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .busca input {
@@ -297,7 +332,7 @@
   @media print {
     body { background: #fff; font-size: 12px; }
     .container { max-width: none; padding: 0; }
-    .controles, .custom, .abas, .busca input, #maisLinhas, .barra, .tela { display: none !important; }
+    .controles, .custom, .abas, .busca input, #maisLinhas, .barra, .tela, .paginas, #atualizarInsights { display: none !important; }
     .topo { border: 0; background: none; color: var(--texto); }
     .topo::before { display: none; }
     .meta, .meta b { color: var(--texto-2); }
@@ -308,6 +343,7 @@
     .grade, .kpis { break-inside: avoid; }
     .rolagem, .rolagem.alta { max-height: none; overflow: visible; margin: 0; }
     footer details { display: block; }
+    #paginaGeral, #paginaInsights { display: block !important; }
   }
 </style>
 </head>
@@ -343,10 +379,15 @@
       <span>Período <b id="txtPeriodo">—</b></span>
       <span id="txtAtualizado">Carregando…</span>
     </div>
+    <nav class="paginas" id="paginas" aria-label="Páginas do painel">
+      <button data-pg="geral" class="ativo">Visão geral</button>
+      <button data-pg="insights">Insights</button>
+    </nav>
   </div>
 </header>
 
 <main class="container">
+<div id="paginaGeral">
   <section class="kpis esqueleto" id="kpis" aria-label="Indicadores principais">
     <article class="card kpi" data-kpi="faturamento"><h3 class="kpi-rot">Faturamento</h3><div class="kpi-valor">R$ 0,00 mi</div><div class="kpi-det">carregando</div></article>
     <article class="card kpi" data-kpi="vendas"><h3 class="kpi-rot">Vendas</h3><div class="kpi-valor">000</div><div class="kpi-det">carregando</div></article>
@@ -461,6 +502,67 @@
       </div>
     </article>
   </section>
+
+</div>
+
+<div id="paginaInsights" hidden>
+  <section aria-labelledby="secInsights">
+    <header class="secao-topo" style="margin-top:0">
+      <h2 id="secInsights">Insights</h2>
+      <p>Leitura automática dos números do período, em linguagem simples</p>
+      <span style="flex:1"></span>
+      <button class="btn" id="atualizarInsights" title="Buscar os dados mais recentes e refazer a análise">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        Atualizar análise
+      </button>
+    </header>
+
+    <article class="card ins-resumo" id="insResumo" aria-label="Resumo executivo">
+      <div class="card-topo"><div><h3>Resumo executivo</h3><p class="sub" id="insResumoSub">Os 3 pontos mais importantes do período</p></div></div>
+      <div class="indisp"><div class="spinner"></div></div>
+    </article>
+
+    <div class="grade g-3">
+      <article class="card ins-card pos" id="insPos" aria-label="Destaques positivos">
+        <div class="card-topo"><div><h3>O que está dando certo</h3><p class="sub">Destaques positivos</p></div></div>
+        <div class="indisp"><div class="spinner"></div></div>
+      </article>
+      <article class="card ins-card ale" id="insAle" aria-label="Alertas">
+        <div class="card-topo"><div><h3>Precisa de atenção</h3><p class="sub">Alertas</p></div></div>
+        <div class="indisp"><div class="spinner"></div></div>
+      </article>
+      <article class="card ins-card acao" id="insAcao" aria-label="Próxima ação sugerida">
+        <div class="card-topo"><div><h3>Próxima ação sugerida</h3><p class="sub">A de maior impacto agora</p></div></div>
+        <div class="indisp"><div class="spinner"></div></div>
+      </article>
+    </div>
+
+    <article class="card" style="margin-top:var(--gap)" id="insDre" aria-label="DRE por obra">
+      <div class="card-topo"><div><h3>DRE por obra</h3><p class="sub" id="insDreSub">Receita, custo e lucro estimado por venda · 10 maiores</p></div></div>
+      <div class="indisp"><div class="spinner"></div></div>
+    </article>
+
+    <div class="grade g-3" style="margin-top:var(--gap)">
+      <article class="card" id="insCac" aria-label="CAC">
+        <div class="card-topo"><div><h3>CAC — custo de aquisição</h3><p class="sub">Quanto custa conquistar cada cliente</p></div></div>
+        <div class="indisp"><div class="spinner"></div></div>
+      </article>
+      <article class="card" id="insCanais" aria-label="Canais de venda">
+        <div class="card-topo"><div><h3>Canais de venda</h3><p class="sub">Vendas e conversão por origem</p></div></div>
+        <div class="indisp"><div class="spinner"></div></div>
+      </article>
+      <article class="card" id="insBrindes" aria-label="Brindes e cortesias">
+        <div class="card-topo"><div><h3>Brindes e cortesias</h3><p class="sub">Vendas a R$ 0 ou com desconto de 100%</p></div></div>
+        <div class="indisp"><div class="spinner"></div></div>
+      </article>
+    </div>
+
+    <article class="card" style="margin-top:var(--gap)" id="insMargem" aria-label="Margem e lucro">
+      <div class="card-topo"><div><h3>Margem e lucro</h3><p class="sub" id="insMargemSub">Margem de caixa por mês e por categoria</p></div></div>
+      <div class="indisp"><div class="spinner"></div></div>
+    </article>
+  </section>
+</div>
 
   <footer id="rodape"></footer>
 </main>
@@ -624,6 +726,7 @@ async function carregar(forcar) {
   void barra.offsetWidth;
   barra.className = "barra ativa";
   $("atualizar").classList.add("girando");
+  $("atualizarInsights").classList.add("girando");
   $("txtAtualizado").textContent = forcar ? "Buscando dados novos na Conta Azul e na Groner…" : "Carregando…";
   try {
     const q = new URLSearchParams({ chave: CHAVE, inicio: p.inicio, fim: p.fim });
@@ -641,6 +744,7 @@ async function carregar(forcar) {
   } finally {
     barra.className = "barra fim";
     $("atualizar").classList.remove("girando");
+    $("atualizarInsights").classList.remove("girando");
   }
 }
 
@@ -674,6 +778,7 @@ function renderizar() {
   seguro("blocoInt", renderIntegracao);
   seguro("blocoTabela", renderTabela);
   seguro("rodape", renderRodape);
+  try { renderInsights(); } catch (e) { console.error("insights", e); }
 }
 
 // ---------- KPIs ----------
@@ -1117,6 +1222,247 @@ function renderRodape() {
   $("rodape").innerHTML = `<details><summary>Fontes e definições</summary><ul>${notas.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></details><p>Gerasol Energia Solar · dados guardados por até 15 minutos</p>`;
 }
 
+// ---------- Insights ----------
+const MES_EXT = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+const mesExtenso = (ym) => MES_EXT[+ym.slice(5, 7) - 1] + " de " + ym.slice(0, 4);
+
+function gerarInsights() {
+  const d = dados;
+  const s = d.saude || {};
+  const f = ok(d.financeiro) ? d.financeiro : null;
+  const g = ok(d.vendas_groner) && d.vendas_groner.quantidade ? d.vendas_groner : null;
+  const ca = ok(d.vendas_conta_azul) && d.vendas_conta_azul.quantidade ? d.vendas_conta_azul : null;
+  const fu = ok(d.funil_groner) ? d.funil_groner : null;
+  const vendas = g || ca;
+  const mesAtual = d.periodo.hoje.slice(0, 7);
+  const nm = (x) => esc(nome(x));
+  const positivos = [], alertas = [];
+
+  // Canais: vendas por origem (Groner) cruzadas com projetos por origem (funil).
+  const normCh = (x) => String(x || "").trim().toLowerCase();
+  const projPorOrigem = new Map((fu && fu.por_origem || []).map((o) => [normCh(o.nome), o.quantidade]));
+  const canais = (g ? g.por_origem : []).map((o) => {
+    const projetos = projPorOrigem.get(normCh(o.nome)) ?? null;
+    return { nome: o.nome, vendas: o.quantidade, valor: o.valor, projetos,
+      conversao: projetos && projetos >= 3 ? (o.quantidade / projetos) * 100 : null };
+  });
+  const comConv = canais.filter((c) => c.conversao != null).sort((a, b) => b.conversao - a.conversao);
+
+  // Nomes de devedores sem repetir o mesmo cliente (a Conta Azul às vezes grava o nome de formas diferentes).
+  const maioresDevedores = (lista, n) => {
+    const vistos = new Set(), saida = [];
+    for (const c of lista || []) {
+      const chave = normCh(nome(c.nome)).replace(/[^a-zà-ÿ]/g, "").slice(0, 12);
+      if (!chave || vistos.has(chave)) continue;
+      vistos.add(chave);
+      saida.push(c);
+      if (saida.length >= n) break;
+    }
+    return saida;
+  };
+
+  // ----- destaques positivos -----
+  const tri = s.crescimento_trimestre_pct, mm = s.crescimento_mm_pct;
+  if (tri != null && tri > 3) positivos.push(`Vendas cresceram <b>+${pct(tri)}</b> no trimestre, contra os 3 meses anteriores.`);
+  else if (mm != null && mm > 10 && s.crescimento_mm_meses)
+    positivos.push(`Vendas de ${mesExtenso(s.crescimento_mm_meses[1])} subiram <b>+${pct(mm, 0)}</b> sobre ${mesExtenso(s.crescimento_mm_meses[0])}.`);
+  if (vendas) {
+    const fechados = vendas.por_mes.filter((m) => m.mes < mesAtual && m.valor > 0);
+    const melhor = [...fechados].sort((a, b) => b.valor - a.valor)[0];
+    if (melhor && fechados.length && fechados[fechados.length - 1].mes === melhor.mes && fechados.length >= 3)
+      positivos.push(`${mesExtenso(melhor.mes)} foi o <b>melhor mês do período</b>: ${brlCurto(melhor.valor)} em ${melhor.quantidade} vendas.`);
+  }
+  if (canais.length && g && g.total) {
+    const top = canais[0];
+    positivos.push(`<b>${nm(top.nome)}</b> é o canal que mais vende: ${brlCurto(top.valor)} (${pct(top.valor / g.total * 100, 0)} do faturamento) em ${top.vendas} vendas.`);
+  }
+  if (comConv.length) {
+    const c = comConv.find((x) => x.projetos >= 5) || comConv[0];
+    if (c.projetos >= 5 && (!canais.length || c.nome !== canais[0].nome))
+      positivos.push(`Canal <b>${nm(c.nome)}</b> converte <b>${pct(c.conversao, 0)}</b> dos projetos em venda.`);
+  }
+  if (s.prazo_medio_recebimento_dias != null && s.prazo_medio_recebimento_dias <= 45)
+    positivos.push(`Clientes pagam rápido: em média <b>${s.prazo_medio_recebimento_dias} dias</b> após a venda.`);
+  if (fu && fu.conversao_projetos_pct != null && fu.conversao_projetos_pct >= 10)
+    positivos.push(`Funil converte <b>${pct(fu.conversao_projetos_pct, 0)}</b> dos projetos em venda (${inteiro(fu.projetos)} projetos → ${inteiro(fu.vendas)} vendas).`);
+  if (s.folego_90d != null && s.folego_90d >= 1.2 && (s.saldo_atual ?? 0) >= 0)
+    positivos.push(`O que entra nos próximos 90 dias cobre <b>${num1(s.folego_90d)}×</b> as contas a pagar do período.`);
+
+  // ----- alertas (do mais grave ao mais leve) -----
+  if (s.saldo_atual != null && s.saldo_atual < 0)
+    alertas.push({ cor: "vermelho", html: `Saldo em contas negativo: <b>${brl(s.saldo_atual)}</b> — limite em uso ou extrato por conciliar.` });
+  if (s.margem_pct != null && s.margem_pct < 0)
+    alertas.push({ cor: "vermelho", html: `No período saiu mais dinheiro do que entrou: margem de caixa de <b>${pct(s.margem_pct)}</b> (entrou ${brlCurto(s.entradas_periodo)}, saiu ${brlCurto(s.saidas_periodo)}).` });
+  if (f) {
+    const r = f.receber, p = f.pagar;
+    if (r.inadimplencia_pct > 10 || r.vencido > 0) {
+      const maiores = maioresDevedores(r.vencidos_lista, 3).map((c) => nm(c.nome)).filter(Boolean);
+      alertas.push({ cor: r.inadimplencia_pct > 15 ? "vermelho" : "amarelo",
+        html: `<b>${brlCurto(r.vencido)}</b> vencidos e não recebidos (${r.qtd_vencidos} parcelas; inadimplência de ${pct(r.inadimplencia_pct)})${maiores.length ? ". Maiores devedores: " + maiores.join(", ") : ""}.` });
+    }
+    if (r.vencido_possivelmente_pago > 0)
+      alertas.push({ cor: "amarelo", html: `<b>${brl0(r.vencido_possivelmente_pago)}</b> vencidos parecem já pagos (${r.qtd_possivelmente_pago === 1 ? "1 parcela" : r.qtd_possivelmente_pago + " parcelas"}): falta só dar baixa na Conta Azul.` });
+    if (p.vencido > 0)
+      alertas.push({ cor: "amarelo", html: `<b>${brlCurto(p.vencido)}</b> de contas a pagar vencidas (${p.qtd_vencidos} contas) — risco de juros e bloqueio de crédito.` });
+    const real = (f.fluxo_caixa.realizado || []).filter((m) => (m.entradas || m.saidas) && m.mes < mesAtual);
+    const ult = real[real.length - 1];
+    if (ult && ult.resultado < 0)
+      alertas.push({ cor: "amarelo", html: `${mesExtenso(ult.mes)} fechou com caixa negativo de <b>${brlCurto(Math.abs(ult.resultado))}</b> (entrou ${brlCurto(ult.entradas)}, saiu ${brlCurto(ult.saidas)}).` });
+  }
+  if (comConv.length >= 2) {
+    const media = comConv.reduce((a, c) => a + c.conversao, 0) / comConv.length;
+    const fraco = [...comConv].reverse().find((c) => c.conversao < media * 0.6 && c.projetos >= 5);
+    if (fraco)
+      alertas.push({ cor: "amarelo", html: `Canal <b>${nm(fraco.nome)}</b> gera muitos projetos (${fraco.projetos}), mas converte só <b>${pct(fraco.conversao, 0)}</b> em venda — revisar a abordagem comercial desse canal.` });
+  }
+
+  // ----- proxima acao (uma so, priorizada) -----
+  let acao;
+  const r = f ? f.receber : null;
+  if (r && r.vencido_possivelmente_pago > 0) {
+    acao = {
+      titulo: `Revisar e dar baixa nos ${brl0(r.vencido_possivelmente_pago)} vencidos que já entraram`,
+      detalhe: `${r.qtd_possivelmente_pago === 1 ? "Há 1 parcela vencida" : "Há " + r.qtd_possivelmente_pago + " parcelas vencidas"} cujo pagamento já aparece no extrato, mas que segue em aberto na Conta Azul. Dar baixa leva minutos e a inadimplência cai na hora.`,
+      porque: r.vencido > r.vencido_possivelmente_pago
+        ? `Depois disso, o próximo passo é cobrar os ${brlCurto(r.vencido - r.vencido_possivelmente_pago)} vencidos restantes, começando pelos maiores devedores.`
+        : "",
+    };
+  } else if (r && r.vencido > 0) {
+    const maiores = maioresDevedores(r.vencidos_lista, 3);
+    acao = {
+      titulo: `Cobrar os ${brlCurto(r.vencido)} vencidos, começando pelos maiores devedores`,
+      detalhe: maiores.length
+        ? "Priorize " + maiores.map((c) => `${nm(c.nome)} (${brl0(c.valor)}, ${c.dias_atraso} dias de atraso)`).join(", ") + "."
+        : "Ligue para os clientes com parcelas vencidas, do maior valor para o menor.",
+      porque: (s.saldo_atual ?? 0) < 0 ? `Receber esses valores tira o caixa do negativo (${brl(s.saldo_atual)}) e normaliza o fluxo.` : "",
+    };
+  } else if (s.margem_pct != null && s.margem_pct < 0 && f) {
+    const cat = (f.pagar.por_categoria || []).filter((c) => !/empr[eé]st|financ|retirada|s[oó]cio/i.test(c.nome))[0] || (f.pagar.por_categoria || [])[0];
+    acao = cat ? {
+      titulo: `Revisar as despesas de "${esc(frase(cat.nome))}" (${brlCurto(cat.valor)} no período)`,
+      detalhe: "É a maior saída operacional. Renegociar ou cortar 10% dessa categoria já melhora a margem de caixa, hoje em " + pct(s.margem_pct) + ".",
+      porque: "Empréstimos e retiradas de sócios ficaram de fora: a revisão é sobre o custo da operação.",
+    } : { titulo: "Revisar as maiores despesas do período", detalhe: "A margem de caixa está negativa: saiu mais do que entrou.", porque: "" };
+  } else if (comConv.length) {
+    const c = comConv[0];
+    acao = {
+      titulo: `Investir mais no canal ${nm(c.nome)}, que converte ${pct(c.conversao, 0)} dos projetos em venda`,
+      detalhe: `É o canal com melhor aproveitamento comercial (${c.vendas} vendas de ${c.projetos} projetos). Reforçar ele tende a trazer retorno mais rápido do que abrir canal novo.`,
+      porque: "",
+    };
+  } else {
+    acao = { titulo: "Começar a medir o custo por obra", detalhe: "Lance as despesas de cada obra na Conta Azul com um centro de custo por obra. Assim o DRE por obra passa a sair automaticamente.", porque: "" };
+  }
+
+  // ----- DRE por obra (receita; custo so se existir) -----
+  const dreFonte = ca || g;
+  const dre = dreFonte ? dreFonte.lista
+    .filter((v) => !/cancel|perdid|reprov/i.test(v.status || v.situacao || ""))
+    .slice().sort((a, b) => b.valor - a.valor).slice(0, 10)
+    .map((v) => ({ cliente: v.cliente, numero: v.numero ?? v.id, data: v.data, extra: ca ? (v.condicao || "—") : (v.origem || "—"), valor: v.valor, custo: null }))
+    : [];
+
+  // ----- brindes / cortesias -----
+  const vivas = (v) => !/cancel|perdid|reprov/i.test(v.status || v.situacao || "");
+  const brindes = [
+    ...(g ? g.lista.filter((v) => vivas(v)).map((v) => ({ ...v, fonte: "Groner" })) : []),
+    ...(ca ? ca.lista.filter((v) => vivas(v)).map((v) => ({ ...v, fonte: "Conta Azul" })) : []),
+  ].filter((v) => v.valor <= 0.01);
+
+  // ----- margem de caixa por mes -----
+  const margens = f ? (f.fluxo_caixa.realizado || []).filter((m) => m.entradas > 0).slice(-6)
+    .map((m) => ({ mes: m.mes, entradas: m.entradas, saidas: m.saidas, margem: (m.entradas - m.saidas) / m.entradas * 100 })) : [];
+
+  // ----- resumo executivo (3 bullets) -----
+  const resumo = [];
+  if (vendas)
+    resumo.push({ cor: "verde", html: `Foram <b>${inteiro(vendas.quantidade)} vendas</b> ${vendas === g ? "aprovadas na Groner" : "lançadas na Conta Azul"}, totalizando <b>${brlCurto(vendas.total)}</b> no período, com ticket médio de ${brl0(vendas.ticket_medio)}.` });
+  if (f) {
+    if ((s.saldo_atual ?? 0) < 0 || (s.margem_pct ?? 0) < 0)
+      resumo.push({ cor: "vermelho", html: `Caixa apertado: saldo de <b>${brl(s.saldo_atual)}</b> e <b>${brlCurto(f.receber.vencido)}</b> vencidos sem receber — cobrar clientes e dar baixa no que já entrou é a prioridade.` });
+    else
+      resumo.push({ cor: "verde", html: `Caixa em ordem: saldo de <b>${brlCurto(s.saldo_atual)}</b>, margem de caixa de ${pct(s.margem_pct)} e inadimplência de ${pct(f.receber.inadimplencia_pct)}.` });
+  }
+  if (canais.length && g && g.total)
+    resumo.push({ cor: "amarelo", html: `<b>${nm(canais[0].nome)}</b> responde por ${pct(canais[0].valor / g.total * 100, 0)} do faturamento. O CAC de marketing ainda <b>não é medido</b> — sem ele, não dá para saber se anúncio dá lucro.` });
+  else if (vendas)
+    resumo.push({ cor: "amarelo", html: "Origem das vendas e CAC de marketing ainda <b>não são medidos</b>." });
+
+  return { resumo, positivos, alertas, acao, dre, dreFonteCA: !!ca, canais, brindes, margens, ca, g };
+}
+
+function preencherCard(id, html) {
+  const el = $(id);
+  const topo = el.querySelector(".card-topo");
+  el.innerHTML = "";
+  if (topo) el.appendChild(topo);
+  el.insertAdjacentHTML("beforeend", html);
+}
+
+function renderInsights() {
+  const r = gerarInsights();
+  const item = (cor, html) => `<li class="ins-item"><i class="dot ${cor}"></i><span>${html}</span></li>`;
+
+  preencherCard("insResumo", r.resumo.length
+    ? `<ul>${r.resumo.map((i) => `<li><i class="dot ${i.cor}"></i><span>${i.html}</span></li>`).join("")}</ul>`
+    : `<p class="ins-vazio">Sem dados suficientes para o resumo.</p>`);
+
+  preencherCard("insPos", r.positivos.length
+    ? `<ul>${r.positivos.map((p) => item("verde", p)).join("")}</ul>`
+    : `<p class="ins-vazio">Nenhum destaque claro no período.</p>`);
+
+  preencherCard("insAle", r.alertas.length
+    ? `<ul>${r.alertas.map((a) => item(a.cor, a.html)).join("")}</ul>`
+    : `<ul>${item("verde", "Nenhum alerta: os números do período estão em ordem.")}</ul>`);
+
+  preencherCard("insAcao", `
+    <p class="ins-acao-titulo">${r.acao.titulo}</p>
+    <p class="ins-acao-detalhe">${r.acao.detalhe}</p>
+    ${r.acao.porque ? `<p class="ins-acao-porque">${r.acao.porque}</p>` : ""}`);
+
+  preencherCard("insDre", r.dre.length ? `
+    <div class="rolagem"><table class="lista"><thead><tr><th>Obra / cliente</th><th>Nº</th><th>Data</th><th>${r.dreFonteCA ? "Condição" : "Origem"}</th><th class="num">Receita</th><th class="num">Custo</th><th class="num">Margem</th><th class="num">Lucro</th></tr></thead><tbody>
+      ${r.dre.map((v) => `<tr><td class="forte">${esc(nome(v.cliente)) || "—"}</td><td>${v.numero ?? "—"}</td><td>${dataBR(v.data)}</td><td>${esc(v.extra)}</td>
+        <td class="num forte">${brl(v.valor)}</td><td class="num"><span class="tag">sem custo informado</span></td><td class="num">—</td><td class="num">—</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="nota-peq">10 maiores vendas do período (${r.dreFonteCA ? "Conta Azul" : "Groner"}). A Conta Azul não guarda o custo de cada obra, então custo, margem e lucro ficam como "sem custo informado". Para medir: lance as despesas de cada obra com um centro de custo próprio (ex.: "Obra — nome do cliente") e o DRE por obra sai automaticamente.</p>`
+    : `<p class="ins-vazio">Sem vendas no período para montar o DRE.</p>`);
+
+  preencherCard("insCac", `
+    <div class="ins-num">não medido</div>
+    <div class="ins-num-rot">não há gasto de marketing registrado na Conta Azul</div>
+    <ol class="ins-passos">
+      <li>Crie na Conta Azul a categoria <b>Marketing</b> e lance nela todo gasto com anúncios (Google Ads, panfletos, impulsionamentos).</li>
+      <li>CAC do mês = gasto de marketing ÷ vendas do mês${r.g ? ` (a média atual é de ${(r.g.quantidade / dados.periodo.meses.length).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} vendas/mês)` : ""}.</li>
+      <li>Compare com os canais gratuitos: indicação e orgânico chegam com CAC praticamente zero — vale incentivar quem indica.</li>
+    </ol>`);
+
+  preencherCard("insCanais", r.canais.length ? `
+    <div class="rolagem"><table class="lista"><thead><tr><th>Canal</th><th class="num">Vendas</th><th class="num">Faturamento</th><th class="num">Conversão*</th></tr></thead><tbody>
+      ${r.canais.map((c) => `<tr><td class="forte">${esc(nome(c.nome))}</td><td class="num">${inteiro(c.vendas)}</td><td class="num">${brlCurto(c.valor)}</td>
+        <td class="num">${c.conversao != null ? `<span class="tag ${c.conversao >= 20 ? "ok" : c.conversao < 8 ? "alerta" : ""}">${pct(c.conversao, 0)}</span>` : `<span class="peq">sem dados</span>`}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="nota-peq">*Projetos criados no período que viraram venda (aproximação, sem cruzar projeto a projeto). "Sem dados" = poucos projetos no canal.</p>`
+    : `<p class="ins-vazio">Sem dados de origem das vendas na Groner.</p>`);
+
+  preencherCard("insBrindes", r.brindes.length ? `
+    <div class="rolagem"><table class="lista"><thead><tr><th>Cliente</th><th>Data</th><th>Fonte</th><th class="num">Valor</th></tr></thead><tbody>
+      ${r.brindes.slice(0, 10).map((v) => `<tr><td class="forte">${esc(nome(v.cliente)) || "—"}</td><td>${dataBR(v.data)}</td><td>${v.fonte}</td><td class="num">${brl(v.valor)}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="nota-peq">${r.brindes.length} ${r.brindes.length === 1 ? "venda" : "vendas"} a R$ 0 (ou desconto de 100%). Se for brinde ou cortesia de propósito, tudo bem; se não, revise o cadastro.</p>`
+    : `<ul><li class="ins-item"><i class="dot verde"></i><span>Nenhuma venda a R$ 0 ou com desconto de 100% no período.</span></li></ul>`);
+
+  preencherCard("insMargem", (r.margens.length ? `
+    <div class="ins-margens">${r.margens.map((m) => `
+      <div class="ins-margem-linha"><span>${rotMes(m.mes)}</span>
+        <div class="f-trilha"><span style="width:${Math.min(100, Math.abs(m.margem))}%;background:${m.margem >= 0 ? COR.primaria : COR.vermelho}"></span></div>
+        <span class="ins-margem-val ${m.margem < 0 ? "neg" : ""}">${m.margem > 0 ? "+" : ""}${pct(m.margem, 0)}</span></div>`).join("")}</div>
+    <p class="nota-peq">Margem de caixa = (entradas − saídas) ÷ entradas do mês, pelo extrato. Meses sem entrada não aparecem.</p>`
+    : `<p class="ins-vazio">Sem dados de fluxo de caixa para calcular a margem por mês.</p>`)
+    + (r.ca && r.ca.por_categoria && r.ca.por_categoria.length ? `
+    <p class="nota-peq"><b>Por categoria:</b> ${r.ca.por_categoria.map((c) => `${esc(nome(c.nome))} (${brlCurto(c.valor)} de receita)`).join(", ")}. Sem custo lançado por categoria, a margem por categoria não é medida.</p>` : ""));
+}
+
 // ---------- interacoes ----------
 function ligarAbas(idAbas, chave, render) {
   $(idAbas).addEventListener("click", (e) => {
@@ -1174,7 +1520,18 @@ $("aplicar").addEventListener("click", () => {
   carregar(false);
 });
 $("atualizar").addEventListener("click", () => carregar(true));
+$("atualizarInsights").addEventListener("click", () => carregar(true));
 $("telaBotao").addEventListener("click", () => { $("tela").classList.remove("aberta"); carregar(false); });
+
+$("paginas").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-pg]");
+  if (!b) return;
+  $("paginas").querySelectorAll("button").forEach((x) => x.classList.toggle("ativo", x === b));
+  const ins = b.dataset.pg === "insights";
+  $("paginaGeral").hidden = ins;
+  $("paginaInsights").hidden = !ins;
+  window.scrollTo({ top: 0 });
+});
 
 let tResize;
 window.addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(() => { if (dados) { seguro("blocoFat", renderFaturamento); seguro("blocoTop", renderTop); seguro("blocoOrig", renderOrigem); seguro("blocoFluxo", renderFluxo); seguro("blocoProj", renderProjetado); seguro("blocoAging", renderAging); seguro("blocoDesp", renderDespesas); } }, 300); });
