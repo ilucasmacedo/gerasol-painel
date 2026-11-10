@@ -180,6 +180,18 @@
   .tag.ok { background: var(--primaria-clara); color: #137a3e; }
   .tag.alerta { background: #fffaeb; color: #b54708; }
   .tag.erro { background: #fef3f2; color: #b42318; }
+  .dre-lapis, .dre-x { border: 0; background: transparent; color: var(--suave); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; }
+  .dre-lapis:hover, .dre-x:hover { color: var(--primaria); }
+  .dre-x { font-size: 13px; }
+  .dre-caixa { position: fixed; inset: 0; background: rgba(17, 24, 39, .45); display: none; align-items: center; justify-content: center; z-index: 40; padding: 16px; }
+  .dre-caixa.aberta { display: flex; }
+  .dre-painel { background: #fff; border-radius: 12px; width: min(480px, 100%); max-height: min(86vh, 720px); overflow: auto; padding: 20px; box-shadow: 0 16px 40px rgba(16, 24, 40, .18); }
+  .dre-painel h3 { margin: 0; font-size: 18px; }
+  .dre-painel .sub { margin: 4px 0 14px; }
+  #dreCampos { display: grid; gap: 10px; }
+  #dreCampos label { display: grid; gap: 4px; font-size: 12px; color: var(--suave); }
+  #dreCampos input { border: 1px solid var(--borda-forte); border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--texto); }
+  .dre-acoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
   .saldo-total { font-size: 24px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
   .neg { color: var(--vermelho) !important; }
@@ -538,7 +550,8 @@
     </div>
 
     <article class="card" style="margin-top:var(--gap)" id="insDre" aria-label="DRE por obra">
-      <div class="card-topo"><div><h3>DRE por obra</h3><p class="sub" id="insDreSub">Receita, custo e lucro estimado por venda · 10 maiores</p></div></div>
+      <div class="card-topo"><div><h3>DRE por obra</h3><p class="sub" id="insDreSub">Receita da venda e custos lançados aqui. Fica salvo no painel, não vai para a Conta Azul.</p></div>
+        <button class="btn" id="dreNovaColuna" type="button">Nova coluna</button></div>
       <div class="indisp"><div class="spinner"></div></div>
     </article>
 
@@ -577,6 +590,7 @@
 <script>
 "use strict";
 const API = "https://rbfwjsffrbcihuluvjhc.supabase.co/functions/v1/leo-dashboard";
+const API_DRE = "https://rbfwjsffrbcihuluvjhc.supabase.co/functions/v1/leo-dre";
 const CHAVE = new URLSearchParams(location.search).get("chave") || new URLSearchParams(location.hash.slice(1)).get("chave") || "";
 
 // ---------- formatacao ----------
@@ -737,6 +751,7 @@ async function carregar(forcar) {
     if (!r.ok) throw new Error(j.erro || `Servidor respondeu ${r.status}`);
     dados = j;
     $("tela").classList.remove("aberta");
+    await carregarDre();
     renderizar();
   } catch (e) {
     if (!dados) mostrarTela("Não foi possível carregar", "Verifique a internet e tente de novo. Detalhe: " + e.message, true);
@@ -1354,12 +1369,19 @@ function gerarInsights() {
     acao = { titulo: "Começar a medir o custo por obra", detalhe: "Lance as despesas de cada obra na Conta Azul com um centro de custo por obra. Assim o DRE por obra passa a sair automaticamente.", porque: "" };
   }
 
-  // ----- DRE por obra (receita; custo so se existir) -----
+  // ----- DRE por obra (receita da venda; custos editados no painel) -----
   const dreFonte = ca || g;
   const dre = dreFonte ? dreFonte.lista
     .filter((v) => !/cancel|perdid|reprov/i.test(v.status || v.situacao || ""))
-    .slice().sort((a, b) => b.valor - a.valor).slice(0, 10)
-    .map((v) => ({ cliente: v.cliente, numero: v.numero ?? v.id, data: v.data, extra: ca ? (v.condicao || "—") : (v.origem || "—"), valor: v.valor, custo: null }))
+    .slice().sort((a, b) => String(b.data).localeCompare(String(a.data)))
+    .map((v) => ({
+      chave: (ca ? "ca:" : "gr:") + String(v.id ?? v.numero),
+      cliente: v.cliente,
+      numero: v.numero ?? v.id,
+      data: v.data,
+      extra: ca ? (v.condicao || "—") : (v.origem || "—"),
+      valor: v.valor,
+    }))
     : [];
 
   // ----- brindes / cortesias -----
@@ -1391,6 +1413,83 @@ function gerarInsights() {
   return { resumo, positivos, alertas, acao, dre, dreFonteCA: !!ca, canais, brindes, margens, ca, g };
 }
 
+let dreSalvo = { colunas: [], obras: {} };
+
+function obraDre(chave) { return dreSalvo.obras[chave] || null; }
+
+function htmlDre(r) {
+  if (!r.dre.length) return `<p class="ins-vazio">Sem vendas no período para montar o DRE.</p>`;
+  const custos = dreSalvo.colunas.filter((c) => c.tipo === "custo");
+  const conds = dreSalvo.colunas.filter((c) => c.tipo === "condicao");
+  const cab = (lista) => lista.map((c) => `<th class="${c.tipo === "custo" ? "num" : ""}">${esc(c.nome)} <button type="button" class="dre-x" data-col="${esc(c.id)}" title="Remover esta coluna">×</button></th>`).join("");
+  const linhas = r.dre.map((v) => {
+    const s = obraDre(v.chave);
+    const receita = s && s.receita != null ? Number(s.receita) : v.valor;
+    const vals = (s && s.valores) || {};
+    let custo = 0, tem = false;
+    const tdsC = custos.map((c) => {
+      if (vals[c.id] == null || vals[c.id] === "") return `<td class="num peq">—</td>`;
+      tem = true; custo += Number(vals[c.id]) || 0;
+      return `<td class="num">${brl(Number(vals[c.id]) || 0)}</td>`;
+    }).join("");
+    const tdsK = conds.map((c) => `<td>${esc(vals[c.id] || "—")}</td>`).join("");
+    const lucro = tem ? receita - custo : null;
+    return `<tr>
+      <td class="forte">${esc(nome(v.cliente)) || "—"} <button type="button" class="dre-lapis" data-chave="${esc(v.chave)}" title="Editar custos e condições">✎</button></td>
+      <td>${esc(v.numero ?? "—")}</td><td>${dataBR(v.data)}</td>
+      <td class="num forte">${brl(receita)}</td>${tdsC}${tdsK}
+      <td class="num${lucro != null && lucro < 0 ? " neg" : ""}">${lucro == null ? `<span class="tag">sem custo</span>` : brl(lucro)}</td>
+      <td class="num">${lucro == null || !receita ? "—" : pct(lucro / receita * 100, 0)}</td></tr>`;
+  }).join("");
+  return `<div class="rolagem alta"><table class="lista"><thead><tr><th>Obra / cliente</th><th>Nº</th><th>Data</th><th class="num">Receita</th>${cab(custos)}${cab(conds)}<th class="num">Lucro</th><th class="num">Margem</th></tr></thead><tbody>${linhas}</tbody></table></div>
+    <p class="nota-peq">O lápis grava nesta tabela. A receita começa com o valor da venda e pode ser ajustada. Colunas novas (custo ou condição) valem para todas as obras. Nada disso é enviado para a Conta Azul.</p>`;
+}
+
+async function carregarDre() {
+  if (!CHAVE) return;
+  try {
+    const r = await fetch(`${API_DRE}?chave=${encodeURIComponent(CHAVE)}`, { cache: "no-store", referrerPolicy: "no-referrer" });
+    if (!r.ok) return;
+    const j = await r.json();
+    dreSalvo = { colunas: j.colunas || [], obras: {} };
+    for (const o of j.obras || []) dreSalvo.obras[o.chave] = o;
+  } catch (e) { console.error("dre", e); }
+}
+
+async function drePost(corpo) {
+  const r = await fetch(`${API_DRE}?chave=${encodeURIComponent(CHAVE)}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(corpo),
+    referrerPolicy: "no-referrer",
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || "Não foi possível salvar");
+  return j;
+}
+
+function abrirDre(chave) {
+  const r = gerarInsights();
+  const v = r.dre.find((x) => x.chave === chave);
+  if (!v) return;
+  const s = obraDre(chave);
+  const receita = s && s.receita != null ? Number(s.receita) : v.valor;
+  const vals = (s && s.valores) || {};
+  $("dreTitulo").textContent = nome(v.cliente) || "Obra";
+  $("dreSubtitulo").textContent = `Nº ${v.numero ?? "—"} · ${dataBR(v.data)}`;
+  $("dreForm").dataset.chave = chave;
+  $("dreForm").dataset.numero = v.numero ?? "";
+  $("dreForm").dataset.cliente = v.cliente || "";
+  $("dreForm").dataset.data = v.data || "";
+  const custos = dreSalvo.colunas.filter((c) => c.tipo === "custo");
+  const conds = dreSalvo.colunas.filter((c) => c.tipo === "condicao");
+  $("dreCampos").innerHTML = `<label>Receita<input name="receita" inputmode="decimal" value="${String(receita).replace(".", ",")}"></label>`
+    + custos.map((c) => `<label>${esc(c.nome)} (R$)<input data-col="${esc(c.id)}" data-tipo="custo" inputmode="decimal" value="${vals[c.id] != null ? String(vals[c.id]).replace(".", ",") : ""}" placeholder="0,00"></label>`).join("")
+    + conds.map((c) => `<label>${esc(c.nome)}<input data-col="${esc(c.id)}" data-tipo="condicao" value="${esc(vals[c.id] || "")}" placeholder="ex.: financiado, à vista"></label>`).join("")
+    + (dreSalvo.colunas.length ? "" : `<p class="nota-peq">Ainda não há colunas de custo. Use "Nova coluna" para criar Material, Mão de obra ou outra.</p>`);
+  $("dreCaixa").classList.add("aberta");
+}
+
 function preencherCard(id, html) {
   const el = $(id);
   const topo = el.querySelector(".card-topo");
@@ -1420,13 +1519,7 @@ function renderInsights() {
     <p class="ins-acao-detalhe">${r.acao.detalhe}</p>
     ${r.acao.porque ? `<p class="ins-acao-porque">${r.acao.porque}</p>` : ""}`);
 
-  preencherCard("insDre", r.dre.length ? `
-    <div class="rolagem"><table class="lista"><thead><tr><th>Obra / cliente</th><th>Nº</th><th>Data</th><th>${r.dreFonteCA ? "Condição" : "Origem"}</th><th class="num">Receita</th><th class="num">Custo</th><th class="num">Margem</th><th class="num">Lucro</th></tr></thead><tbody>
-      ${r.dre.map((v) => `<tr><td class="forte">${esc(nome(v.cliente)) || "—"}</td><td>${v.numero ?? "—"}</td><td>${dataBR(v.data)}</td><td>${esc(v.extra)}</td>
-        <td class="num forte">${brl(v.valor)}</td><td class="num"><span class="tag">sem custo informado</span></td><td class="num">—</td><td class="num">—</td></tr>`).join("")}
-    </tbody></table></div>
-    <p class="nota-peq">10 maiores vendas do período (${r.dreFonteCA ? "Conta Azul" : "Groner"}). A Conta Azul não guarda o custo de cada obra, então custo, margem e lucro ficam como "sem custo informado". Para medir: lance as despesas de cada obra com um centro de custo próprio (ex.: "Obra — nome do cliente") e o DRE por obra sai automaticamente.</p>`
-    : `<p class="ins-vazio">Sem vendas no período para montar o DRE.</p>`);
+  preencherCard("insDre", htmlDre(r));
 
   preencherCard("insCac", `
     <div class="ins-num">não medido</div>
@@ -1521,6 +1614,63 @@ $("aplicar").addEventListener("click", () => {
 });
 $("atualizar").addEventListener("click", () => carregar(true));
 $("atualizarInsights").addEventListener("click", () => carregar(true));
+
+$("insDre").addEventListener("click", async (e) => {
+  const lapis = e.target.closest(".dre-lapis");
+  if (lapis) { abrirDre(lapis.dataset.chave); return; }
+  const x = e.target.closest(".dre-x");
+  if (!x) return;
+  const col = dreSalvo.colunas.find((c) => c.id === x.dataset.col);
+  if (!col || !confirm(`Remover a coluna "${col.nome}"? Os valores já lançados deixam de aparecer.`)) return;
+  try {
+    await drePost({ acao: "remover-coluna", id: col.id });
+    await carregarDre();
+    renderInsights();
+  } catch (err) { alert(err.message); }
+});
+
+$("dreNovaColuna").addEventListener("click", async () => {
+  const nomeCol = prompt("Nome da nova coluna (ex.: Material, Mão de obra, Imposto, Entrada)");
+  if (!nomeCol || nomeCol.trim().length < 2) return;
+  const tipo = confirm("OK = coluna de custo em reais.\nCancelar = coluna de condição (texto, ex.: financiado, à vista).") ? "custo" : "condicao";
+  try {
+    await drePost({ acao: "coluna", nome: nomeCol.trim(), tipo });
+    await carregarDre();
+    renderInsights();
+  } catch (err) { alert(err.message); }
+});
+
+$("dreCancelar").addEventListener("click", () => $("dreCaixa").classList.remove("aberta"));
+$("dreCaixa").addEventListener("click", (e) => { if (e.target === $("dreCaixa")) $("dreCaixa").classList.remove("aberta"); });
+$("dreForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const valores = {};
+  f.querySelectorAll("[data-col]").forEach((inp) => {
+    if (inp.dataset.tipo === "condicao") { if (inp.value.trim()) valores[inp.dataset.col] = inp.value.trim(); }
+    else {
+      const n = Number(String(inp.value).replace(/\./g, "").replace(",", "."));
+      if (inp.value.trim() && Number.isFinite(n)) valores[inp.dataset.col] = n;
+    }
+  });
+  const receita = Number(String(f.receita.value).replace(/\./g, "").replace(",", "."));
+  $("dreSalvar").disabled = true;
+  try {
+    await drePost({
+      acao: "salvar",
+      chave: f.dataset.chave,
+      numero: f.dataset.numero,
+      cliente: f.dataset.cliente,
+      data: f.dataset.data,
+      receita: Number.isFinite(receita) ? receita : null,
+      valores,
+    });
+    await carregarDre();
+    $("dreCaixa").classList.remove("aberta");
+    renderInsights();
+  } catch (err) { alert(err.message); }
+  finally { $("dreSalvar").disabled = false; }
+});
 $("telaBotao").addEventListener("click", () => { $("tela").classList.remove("aberta"); carregar(false); });
 
 $("paginas").addEventListener("click", (e) => {
@@ -1535,7 +1685,20 @@ $("paginas").addEventListener("click", (e) => {
 
 let tResize;
 window.addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(() => { if (dados) { seguro("blocoFat", renderFaturamento); seguro("blocoTop", renderTop); seguro("blocoOrig", renderOrigem); seguro("blocoFluxo", renderFluxo); seguro("blocoProj", renderProjetado); seguro("blocoAging", renderAging); seguro("blocoDesp", renderDespesas); } }, 300); });
+</script>
 
+<div class="dre-caixa" id="dreCaixa">
+  <form class="dre-painel" id="dreForm">
+    <h3 id="dreTitulo">Obra</h3>
+    <p class="sub" id="dreSubtitulo"></p>
+    <div id="dreCampos"></div>
+    <div class="dre-acoes">
+      <button type="button" class="btn" id="dreCancelar">Cancelar</button>
+      <button type="submit" class="btn primario" id="dreSalvar">Salvar</button>
+    </div>
+  </form>
+</div>
+<script>
 if (typeof Chart === "undefined") mostrarTela("Não foi possível carregar", "A biblioteca de gráficos não carregou. Verifique a internet e recarregue a página.", false);
 else carregar(false);
 </script>
