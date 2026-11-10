@@ -587,6 +587,18 @@
   <button class="btn primario" id="telaBotao">Tentar de novo</button>
 </div></div>
 
+<div class="dre-caixa" id="dreCaixa">
+  <form class="dre-painel" id="dreForm">
+    <h3 id="dreTitulo">Obra</h3>
+    <p class="sub" id="dreSubtitulo"></p>
+    <div id="dreCampos"></div>
+    <div class="dre-acoes">
+      <button type="button" class="btn" id="dreCancelar">Cancelar</button>
+      <button type="submit" class="btn primario" id="dreSalvar">Salvar</button>
+    </div>
+  </form>
+</div>
+
 <script>
 "use strict";
 const API = "https://rbfwjsffrbcihuluvjhc.supabase.co/functions/v1/leo-dashboard";
@@ -753,6 +765,7 @@ async function carregar(forcar) {
     $("tela").classList.remove("aberta");
     await carregarDre();
     renderizar();
+    if (location.hash === "#insights") mostrarPagina("insights");
   } catch (e) {
     if (!dados) mostrarTela("Não foi possível carregar", "Verifique a internet e tente de novo. Detalhe: " + e.message, true);
     else $("txtAtualizado").innerHTML = `<span class="neg">Falha ao atualizar (${esc(e.message)}). Mostrando os dados anteriores.</span>`;
@@ -1673,31 +1686,25 @@ $("dreForm").addEventListener("submit", async (e) => {
 });
 $("telaBotao").addEventListener("click", () => { $("tela").classList.remove("aberta"); carregar(false); });
 
+function mostrarPagina(qual) {
+  const ins = qual === "insights";
+  $("paginas").querySelectorAll("button").forEach((x) => x.classList.toggle("ativo", x.dataset.pg === qual));
+  $("paginaGeral").hidden = ins;
+  $("paginaInsights").hidden = !ins;
+  const url = location.pathname + location.search + (ins ? "#insights" : "");
+  history.replaceState(null, "", url);
+  window.scrollTo({ top: 0 });
+}
 $("paginas").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-pg]");
   if (!b) return;
-  $("paginas").querySelectorAll("button").forEach((x) => x.classList.toggle("ativo", x === b));
-  const ins = b.dataset.pg === "insights";
-  $("paginaGeral").hidden = ins;
-  $("paginaInsights").hidden = !ins;
-  window.scrollTo({ top: 0 });
+  mostrarPagina(b.dataset.pg);
 });
 
 let tResize;
 window.addEventListener("resize", () => { clearTimeout(tResize); tResize = setTimeout(() => { if (dados) { seguro("blocoFat", renderFaturamento); seguro("blocoTop", renderTop); seguro("blocoOrig", renderOrigem); seguro("blocoFluxo", renderFluxo); seguro("blocoProj", renderProjetado); seguro("blocoAging", renderAging); seguro("blocoDesp", renderDespesas); } }, 300); });
 </script>
 
-<div class="dre-caixa" id="dreCaixa">
-  <form class="dre-painel" id="dreForm">
-    <h3 id="dreTitulo">Obra</h3>
-    <p class="sub" id="dreSubtitulo"></p>
-    <div id="dreCampos"></div>
-    <div class="dre-acoes">
-      <button type="button" class="btn" id="dreCancelar">Cancelar</button>
-      <button type="submit" class="btn primario" id="dreSalvar">Salvar</button>
-    </div>
-  </form>
-</div>
 <script>
 if (typeof Chart === "undefined") mostrarTela("Não foi possível carregar", "A biblioteca de gráficos não carregou. Verifique a internet e recarregue a página.", false);
 else carregar(false);
